@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>Temporalis</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+</head>
+
+<script type="text/javascript" src="libs/modernizr.js"></script>
+<script type="text/javascript" src="libs/fj-min.js"></script>
+<script type="text/javascript" src="SlitScan.js"></script>
+<script type="text/javascript" src="libs/dat.gui.js"></script>
+
+<style type="text/css">
+
+  body, html {
+    background: black;
+    margin: 0;
+  }
+
+  #slit-scan {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  #buffer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: none;
+  }
+
+  .dg.main {
+    margin-right: 0;
+  }
+
+  a {
+    position: absolute;
+    width: 100%;
+    bottom: 10px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    font-family: Helvetica, Arial, sans;
+    z-index: 10;
+  }
+
+  a:hover {
+    color: red;
+
+  }
+
+  #badge {
+    display: block;
+    left: 5px;
+    position: absolute;
+    top: 5px;
+    width: auto;
+  }
+
+	html:-moz-full-screen .hide-fullscreen{
+	    display:none !important;
+	}
+	 
+	html:-webkit-full-screen .hide-fullscreen{
+	 	display:none !important;
+	}
+	 
+	html:fullscreen .hide-fullscreen {
+	    display:none !important;
+	}
+</style>
+
+<script type="text/javascript">
+
+  var ss;
+
+  window.onload = function () {
+
+    ss = new SlitScan();
+    FJ.FrameImpulse.addEventListener(ss.draw);
+
+    ss.about = function () {
+      window.open("http://pixel-fiend.positlabs.com/2013/08/temporalis.html");
+    };
+    var gui = new dat.GUI();
+    gui.add(ss, 'slices', 0, 400);
+    gui.add(ss, 'mode', ["vertical", "horizontal"]);
+    gui.add(ss, "about");
+    gui.add({fullscreen:function(){
+
+		var el = document.documentElement, 
+          	rfs = el.requestFullScreen
+            || el.webkitRequestFullScreen
+            || el.mozRequestFullScreen;
+    	rfs.call(el);
+
+    }}, "fullscreen");
+  };
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-24253469-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function () {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript';
+    ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<body>
+
+<a id="badge" class="hide-fullscreen" href="http://www.chromeexperiments.com/detail/temporalis/" target="_blank"><img src="badge.png"
+                                                                                              alt="See my Experiment on ChromeExperiments.com"/></a>
+<a class="hide-fullscreen" href="http://pixel-fiend.positlabs.com/" target="_blank">Posit Labs // Pixel-Fiend</a>
+
+</body>
+</html>

@@ -39,6 +39,7 @@ SlitScan = function () {
 		audio: false
 	}, function (localMediaStream) {
 		video.src = window.URL.createObjectURL(localMediaStream);
+		video.play();
 	}, function (e) {
 		if (e.code === 1) {
 			console.log('User declined permissions.', e);

@@ -1,4 +1,4 @@
-# temporalis
+# Temporalis
 Slit-scan webcam with canvas
 
 https://positlabs.github.io/temporalis/

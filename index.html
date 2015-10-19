@@ -92,6 +92,13 @@
 
 					}
 				}, "fullscreen");
+				gui.add({
+					save: function(){
+
+						window.open(document.querySelector('#slit-scan').toDataURL(), '_blank');
+
+					}
+				}, "save");
 			};
 
 			var _gaq = _gaq || [];

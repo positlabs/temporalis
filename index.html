@@ -9,6 +9,7 @@
 		<script type="text/javascript" src="libs/modernizr.js"></script>
 		<script type="text/javascript" src="SlitScan.js"></script>
 		<script type="text/javascript" src="libs/dat.gui.js"></script>
+		<script type="text/javascript" src="libs/stats.min.js"></script>
 
 		<style type="text/css">
 
@@ -81,11 +82,10 @@
 
 				var gui = new dat.GUI();
 				gui.add(ss, 'slices', 0, 400);
-				gui.add(ss, 'quality', 0.1, 10).onChange(function(){ ss.resize(); });
 				gui.add(ss, 'mode', ['vertical', 'horizontal']);
+				gui.add(ss, 'throttle',false);
 				gui.add({
 					fullscreen: function(){
-
 						var el = document.documentElement;
 						var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen;
 						rfs.call(el);

@@ -4,7 +4,9 @@ SlitScan = function () {
 	this.slices = 70;
 	this.quality = 7;
 	this.mode = 'vertical';
-	var maxQuality = 10.5;
+	this.throttle = false; //throttle draw FPS to 30
+
+	var lastDrawTime = 0;
 
 	var video = document.createElement('video'),
 		canvas = document.createElement('canvas'),
@@ -20,11 +22,16 @@ SlitScan = function () {
 	canvas.id = 'slit-scan';
 	bufferCanvas.id = 'buffer';
 
+	//add stats
+	stats = new Stats();
+	document.body.appendChild(stats.domElement);
+	stats.domElement.id = "stats";
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.top = '0';
+	stats.domElement.style.left = '0';
+
 	video.addEventListener('play', function () {
-		onResize();
-		setTimeout(onResize, 100);
-		setTimeout(onResize, 1000);
-		draw();
+		update();
 	});
 
 	function onResize(){
@@ -34,8 +41,9 @@ SlitScan = function () {
 		canvas.style.height = video.offsetHeight * scale + 'px';
 		canvas.style.left = window.innerWidth * 0.5 - video.offsetWidth * scale * 0.5 + 'px';
 		canvas.style.top = window.innerHeight * 0.5 - video.offsetHeight * scale * 0.5 + 'px';
-		canvas.width = video.videoWidth/(maxQuality-me.quality) || 1;
-		canvas.height = video.videoHeight/(maxQuality-me.quality) || 1;
+		//canvas is same size as incoming video
+		canvas.width = video.videoWidth || 1;
+		canvas.height = video.videoHeight || 1;
 		bufferCanvas.width = canvas.width;
 		bufferCanvas.height = canvas.height;
 		video.style.display = 'none';
@@ -45,11 +53,17 @@ SlitScan = function () {
 
 	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 	navigator.getUserMedia({
-		video: true,
+		video: {
+			optional: [
+				//request hi-rez capture
+				{ minWidth: 1280 },
+				{ minHeight: 720 },
+				{ minFrameRate: 60 }
+			]
+		},
 		audio: false
 	}, function (localMediaStream) {
 		video.addEventListener('loadedmetadata', function(){
-			console.log('loadedmetadata');
 			onResize();
 		});
 		video.src = window.URL.createObjectURL(localMediaStream);
@@ -62,55 +76,70 @@ SlitScan = function () {
 		}
 	});
 
+	var update = function(){
+
+		if (me.throttle){
+			//throttle to 30 FPS, since on 2014 MacBook Pro, webcam captures at 30fps max.
+			if (Date.now() - lastDrawTime >= 1000 / 30) {
+				draw();
+				lastDrawTime = Date.now();
+			}
+		}else{
+			draw();
+		}
+		stats.update();
+		requestAnimationFrame(update);
+
+	};
+
 	var draw = function () {
+
 		if (video.paused) return;
 		if(me.mode === 'vertical'){
 			drawVert();
 		}else{
 			drawHorz();
 		}
-
 		while (frames.length > me.slices){
 			frames.shift();
 		}
-		requestAnimationFrame(draw);
+
 	};
 
 	function drawVert() {
 
-		var bufferSliceHeight = bufferCanvas.height / me.slices;
 		var sliceHeight = canvas.height / me.slices;
 
 		// save current frame to array
 		buffCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, bufferCanvas.width, bufferCanvas.height);
+		frames.push(buffCtx.getImageData(0, 0, bufferCanvas.width, bufferCanvas.height));
 
-		// frames array needs to have arrays of slices
-		var frameSlices = [];
-
-		for (var i = 0, maxi = me.slices; i < maxi; i++) {
-			frameSlices.push(buffCtx.getImageData(0, bufferSliceHeight * i, bufferCanvas.width, bufferSliceHeight));
-
+		//draw slices to canvas
+		for (var i = 0; i < me.slices; i++) {
 			try {
-				ctx.putImageData(frames[i][i], 0, sliceHeight * i);
+				ctx.putImageData(frames[i], 0, 0 , 0, sliceHeight * i , bufferCanvas.width, sliceHeight);
 			} catch (e) {
 			}
 		}
-		frames.push(frameSlices);
 
 	}
 
 	function drawHorz() {
+
 		var sliceWidth = canvas.width / me.slices;
-		buffCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
-		var frameSlices = [];
-		for (var i = 0, maxi = me.slices; i < maxi; i++) {
-			frameSlices.push(buffCtx.getImageData(sliceWidth * i, 0, sliceWidth, bufferCanvas.height));
+
+		// save current frame to array
+		buffCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, bufferCanvas.width, bufferCanvas.height);
+		frames.push(buffCtx.getImageData(0, 0, bufferCanvas.width, bufferCanvas.height));
+
+		//draw slices to canvas
+		for (var i = 0; i < me.slices; i++) {
 			try {
-				ctx.putImageData(frames[i][i], sliceWidth * i, 0);
+				ctx.putImageData(frames[i], 0, 0 ,  sliceWidth * i , 0, sliceWidth, bufferCanvas.height );
 			} catch (e) {
 			}
 		}
-		frames.push(frameSlices);
+		
 	}
 
 	draw();

@@ -123,22 +123,23 @@
 						gifStatus.style.opacity = 1;
 						gifStatus.innerHTML = 'recording...';
 
+						var downsizeBy = 3;
 						var tempCanvas = document.createElement('canvas');
-						tempCanvas.width = ss.canvas.width / 4;
-						tempCanvas.height = ss.canvas.height / 4;
+						tempCanvas.width = Math.round(ss.canvas.width / downsizeBy);
+						tempCanvas.height = Math.round(ss.canvas.height / downsizeBy);
 						var tempCtx = tempCanvas.getContext('2d');
 
 						var gif = new GIF({
 							workers: 8,
 							quality: 10, // lower is better, 10 is default
 							workerScript: 'libs/gif.worker.js',
-							width: ss.canvas.width / 4,
-							height: ss.canvas.height / 4
+							width: tempCanvas.widht,
+							height: tempCanvas.height
 						});
 						gifInterval = setInterval(function(canvas){
 							tempCtx.drawImage(ss.canvas, 0, 0, tempCanvas.width, tempCanvas.height);
-							gif.addFrame(tempCanvas, {copy: true, delay: 150});
-						}, 300);
+							gif.addFrame(tempCanvas, {copy: true, delay: 100});
+						}, 200);
 
 						gif.on('finished', function(blob) {
 							console.log('finished gif');
@@ -155,7 +156,7 @@
 							gif.render();
 							console.log('done getting gif frames');
 							gifStatus.innerHTML = 'processing...';
-						}, 10000);
+						}, 6000);
 					}
 				}, "record gif");
 			};

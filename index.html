@@ -10,6 +10,7 @@
 		<script type="text/javascript" src="SlitScan.js"></script>
 		<script type="text/javascript" src="libs/dat.gui.js"></script>
 		<script type="text/javascript" src="libs/stats.min.js"></script>
+		<script type="text/javascript" src="libs/gif.js"></script>
 
 		<style type="text/css">
 
@@ -55,7 +56,17 @@
 
 			a:hover {
 				color: red;
+			}
 
+			#gif-status {
+				position: absolute;
+				right: 10px;
+				bottom: 10px;
+				color: black;
+				background: red;
+				padding: 5px 10px;
+				opacity: 0;
+				transition: opacity 1s;
 			}
 
 			html:-moz-full-screen .hide-fullscreen{
@@ -74,10 +85,17 @@
 
 		<script type="text/javascript">
 
-			var ss;
+			var $ = function(selector){return document.querySelector(selector);};
+
+			var ss, 
+				gifInterval,
+				gifStatus;
 
 			window.onload = function () {
 
+				initAnalytics();
+
+				gifStatus = $('#gif-status');
 				ss = new SlitScan();
 
 				var gui = new dat.GUI();
@@ -89,36 +107,81 @@
 						var el = document.documentElement;
 						var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen;
 						rfs.call(el);
-
 					}
 				}, "fullscreen");
 				gui.add({
-					save: function(){
-
+					"save image": function(){
 						window.open(document.querySelector('#slit-scan').toDataURL(), '_blank');
-
 					}
-				}, "save");
+				}, "save image");
+				gui.add({
+					"record gif": function(){
+						console.log('starting gif recording');
+
+						gifStatus.style.opacity = 1;
+						gifStatus.innerHTML = 'recording...';
+
+						var tempCanvas = document.createElement('canvas');
+						tempCanvas.width = ss.canvas.width / 4;
+						tempCanvas.height = ss.canvas.height / 4;
+						var tempCtx = tempCanvas.getContext('2d');
+
+						var gif = new GIF({
+							workers: 8,
+							quality: 10, // lower is better, 10 is default
+							workerScript: 'libs/gif.worker.js',
+							width: ss.canvas.width / 4,
+							height: ss.canvas.height / 4
+						});
+						gifInterval = setInterval(function(canvas){
+							tempCtx.drawImage(ss.canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+							gif.addFrame(tempCanvas, {copy: true, delay: 150});
+						}, 300);
+
+						gif.on('finished', function(blob) {
+							console.log('finished gif');
+							// window.open(URL.createObjectURL(blob));
+							var a = document.createElement('a');
+							a.href = URL.createObjectURL(blob);
+							a.download = "temporalis_" + Date.now() + ".gif";
+							a.click();
+							gifStatus.innerHTML = '';
+							gifStatus.style.opacity = 0;
+						});
+						setTimeout(function(){
+							clearInterval(gifInterval);
+							gif.render();
+							console.log('done getting gif frames');
+							gifStatus.innerHTML = 'processing...';
+						}, 10000);
+					}
+				}, "record gif");
 			};
 
-			var _gaq = _gaq || [];
-			_gaq.push(['_setAccount', 'UA-24253469-1']);
-			_gaq.push(['_trackPageview']);
+			var initAnalytics = function(){
 
-			(function () {
-				var ga = document.createElement('script');
-				ga.type = 'text/javascript';
-				ga.async = true;
-				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-				var s = document.getElementsByTagName('script')[0];
-				s.parentNode.insertBefore(ga, s);
-			})();
+				var _gaq = _gaq || [];
+				_gaq.push(['_setAccount', 'UA-24253469-1']);
+				_gaq.push(['_trackPageview']);
+
+				(function () {
+					var ga = document.createElement('script');
+					ga.type = 'text/javascript';
+					ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0];
+					s.parentNode.insertBefore(ga, s);
+				})();
+			};
+
 
 		</script>
 	</head>
 
 	<body>
 		<a class="hide-fullscreen" href="https://github.com/positlabs/temporalis" target="_blank">Fork on GitHub</a>
+
+		<div id="gif-status"></div>
 	</body>
 	
 </html>

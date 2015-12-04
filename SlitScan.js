@@ -15,6 +15,8 @@ SlitScan = function () {
 		buffCtx = bufferCanvas.getContext('2d'),
 		frames = [];
 
+	this.canvas = canvas;
+
 	[video, canvas].forEach(function(el){
 		document.body.appendChild(el);
 	});
@@ -103,6 +105,8 @@ SlitScan = function () {
 		while (frames.length > me.slices){
 			frames.shift();
 		}
+
+		// if(me.onFrame) me.onFrame(canvas);
 
 	};
 

@@ -1,3 +1,5 @@
+//TODO: use RMP
+
 SlitScan = function () {
 
 	var me = this;
@@ -15,6 +17,13 @@ SlitScan = function () {
 		buffCtx = bufferCanvas.getContext('2d'),
 		frames = [];
 
+	this.video = video
+	this.canvas = canvas
+
+	video.addEventListener('loadedmetadata', function(){
+		onResize();
+	});
+
 	this.canvas = canvas;
 
 	[video, canvas].forEach(function(el){
@@ -25,12 +34,12 @@ SlitScan = function () {
 	bufferCanvas.id = 'buffer';
 
 	//add stats
-	stats = new Stats();
-	document.body.appendChild(stats.domElement);
-	stats.domElement.id = "stats";
-	stats.domElement.style.position = 'absolute';
-	stats.domElement.style.top = '0';
-	stats.domElement.style.left = '0';
+	// stats = new Stats();
+	// document.body.appendChild(stats.domElement);
+	// stats.domElement.id = "stats";
+	// stats.domElement.style.position = 'absolute';
+	// stats.domElement.style.top = '0';
+	// stats.domElement.style.left = '0';
 
 	video.addEventListener('play', function () {
 		update();
@@ -54,29 +63,33 @@ SlitScan = function () {
 	window.addEventListener('resize', onResize);
 
 	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-	navigator.getUserMedia({
-		video: {
-			optional: [
-				//request hi-rez capture
-				{ minWidth: 1280 },
-				{ minHeight: 720 },
-				{ minFrameRate: 60 }
-			]
-		},
-		audio: false
-	}, function (localMediaStream) {
-		video.addEventListener('loadedmetadata', function(){
-			onResize();
+	// navigator.getUserMedia = false
+	if(navigator.getUserMedia){
+		canvas.classList.add('mirror')
+		navigator.getUserMedia({
+			video: {
+				optional: [
+					//request hi-rez capture
+					{ minWidth: 1280 },
+					{ minHeight: 720 },
+					{ minFrameRate: 60 }
+				]
+			},
+			audio: false
+		}, function (localMediaStream) {
+			video.src = window.URL.createObjectURL(localMediaStream);
+			setTimeout(function(){
+				video.play();
+			}, 500);
+		}, function (e) {
+			if (e.code === 1) {
+				console.log('User declined permissions.', e);
+			}
 		});
-		video.src = window.URL.createObjectURL(localMediaStream);
-		setTimeout(function(){
-			video.play();
-		}, 500);
-	}, function (e) {
-		if (e.code === 1) {
-			console.log('User declined permissions.', e);
-		}
-	});
+	}else{
+		video.src = './dance.mp4'
+		video.play()
+	}
 
 	var update = function(){
 
@@ -89,7 +102,7 @@ SlitScan = function () {
 		}else{
 			draw();
 		}
-		stats.update();
+		// stats.update();
 		requestAnimationFrame(update);
 
 	};

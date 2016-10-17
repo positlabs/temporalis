@@ -45,3 +45,9 @@ It can be done today digitally, of course. In fact, it's an unintended effect of
 https://www.youtube.com/watch?v=CmjeCchGRQo
 
 He explains the effect at 4:03, but the whole video is well worth watching.
+
+
+
+### Credits
+
+Fallback video is from https://vimeo.com/142024986

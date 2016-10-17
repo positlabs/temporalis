@@ -39,6 +39,7 @@ It's a technique called "chronotopic anamorphosis." First used by Zbigniev Rybcz
 It's particularly effective with rotating motion, because the shadows and other depth cues are preserved in each scan line, giving the strong illusion of the effect actually taking place in the real space.
 Here's Rybczynski's "The Fourth Dimension" showcasing the effect:
 
+https://vimeo.com/186508316
 http://www.dailymotion.com/video/xjbiop_zbigniew-rybczynski-the-fourth-dimention_shortfilms
 
 It can be done today digitally, of course. In fact, it's an unintended effect of most digital cameras when shooting video of fast motion. Here's Gavin Free with a very good explanation of the effect of shutter speeds:

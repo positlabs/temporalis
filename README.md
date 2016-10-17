@@ -12,9 +12,13 @@ Does stuff like this with your webcam:
 
 `slices` determines the number of slices used in the time-stack. More slices means they are smaller, and take longer to push out of the stack.
 
-`quality` determines the size of the canvas to draw to. Higher quality will be drawn to a larger canvas, but may make it slower to draw (mo' pixels, mo' time).
+`mode` determines how the pixels are sliced: vertically or horizontally.
 
-`save` will open a new window with a static image. `quality` affects the size of the output image.
+`throttle` will limit the frames-per-second to 30. Many webcams capture at 30fps.
+
+`save image` will open a new window with a static image. `quality` affects the size of the output image.
+
+`record gif` toggles gif recording state. Press once to start recording, and press again to save the gif.
 
 
 ### Drag and drop videos

@@ -17,6 +17,11 @@ Does stuff like this with your webcam:
 `save` will open a new window with a static image. `quality` affects the size of the output image.
 
 
+### Drag and drop videos
+
+Drag and drop videos onto the canvas to use them as the input. Alternatively, click the canvas to select a video from the file system.
+
+
 ### Post-processing
 
 Because the effect becomes slow when using a high number of slices, you might want to record a screencast, then speed it up for a more enjoyable viewing experience. 

@@ -25,18 +25,7 @@ Does stuff like this with your webcam:
 
 Drag and drop videos onto the canvas to use them as the input. Alternatively, click the canvas to select a video from the file system.
 
-
-### Post-processing
-
-Because the effect becomes slow when using a high number of slices, you might want to record a screencast, then speed it up for a more enjoyable viewing experience. 
-
-Split the original into frames. `-r` specifies the frame rate. e.g. if the original is 30fps, and we use `-r 2`, this would be the equivalent of speeding up by a factor of 15.
-
-`ffmpeg -i temporalis.mov -r 2 tmp/asdf_%04d.png`
-
-Encode the output video, using the frames we created with the previous command.
-
-`ffmpeg -i tmp/asdf_%04d.png out.mp4`
+![](https://media.giphy.com/media/l3vRbHAf89S3nAxTW/giphy.gif)
 
 
 ### History
@@ -56,6 +45,18 @@ https://www.youtube.com/watch?v=CmjeCchGRQo
 
 He explains the effect at 4:03, but the whole video is well worth watching.
 
+
+### Post-processing
+
+Because the effect becomes slow when using a high number of slices, you might want to record a screencast, then speed it up for a more enjoyable viewing experience. 
+
+Split the original into frames. `-r` specifies the frame rate. e.g. if the original is 30fps, and we use `-r 2`, this would be the equivalent of speeding up by a factor of 15.
+
+`ffmpeg -i temporalis.mov -r 2 tmp/asdf_%04d.png`
+
+Encode the output video, using the frames we created with the previous command.
+
+`ffmpeg -i tmp/asdf_%04d.png out.mp4`
 
 
 ### Credits

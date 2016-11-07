@@ -122,7 +122,7 @@
 				ss = new SlitScan();
 
 				var gui = new dat.GUI();
-				gui.add(ss, 'slices', 0, 400);
+				gui.add(ss, 'slices', 0, 400).step(1);
 				gui.add(ss, 'mode', ['vertical', 'horizontal']);
 				gui.add(ss, 'throttle', false);
 				

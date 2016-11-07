@@ -112,8 +112,7 @@ SlitScan = function () {
 
 		// draw slices to canvas
 		var i = options.slices
-		while (i) {
-			i --
+		while (i--) {
 			try {
 				ctx.putImageData(frames[i], 0, 0, 0, sliceHeight * i, bufferCanvas.width, sliceHeight)
 			} catch (e) {
@@ -129,10 +128,9 @@ SlitScan = function () {
 		buffCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, bufferCanvas.width, bufferCanvas.height)
 		frames.push(buffCtx.getImageData(0, 0, bufferCanvas.width, bufferCanvas.height))
 
-		//draw slices to canvas
+		// draw slices to canvas
 		var i = options.slices
-		while (i) {
-			i --
+		while (i--) {
 			try {
 				ctx.putImageData(frames[i], 0, 0, sliceWidth * i, 0, sliceWidth, bufferCanvas.height)
 			} catch (e) {

@@ -6,8 +6,42 @@
 
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-		<script>if(window.location.protocol === 'http:' && window.location.href.match('localhost') === -1) window.location.protocol = 'https:'; </script>
+		<script>
+			// force https unless it's localhost
+			if(window.location.protocol === 'http:' && window.location.href.match('localhost') === -1) {
+				window.location.protocol = 'https:';
+			}
+		</script>
+
+		<script src="./bower_components/webcomponentsjs/webcomponents.min.js"></script>
+		<link rel="import" href="./bower_components/polymer/polymer.html">
+		<link rel="import" href="./bower_components/google-youtube-upload/google-youtube-upload.html">
+		<script src="https://apis.google.com/js/api.js"></script>
+		<script>
+			function start(){
+				// 2. Initialize the JavaScript client library.
+				gapi.client.init({
+					'apiKey': 'AIzaSyCJfewyzhXAopvg3A8leAkxWFtoaQN12hQ',
+					'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
+					'clientId': '785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com',
+					'scope': 'profile',
+				}).then(function() {
+					// 3. Initialize and make the API request.
+					return gapi.client.people.people.get({
+						resourceName: 'people/me'
+					})
+				}).then(function(response) {
+					console.log(response.result)
+				}, function(reason) {
+					console.log('Error: ' + reason.result.error.message)
+				})
+			}
+			// 1. Load the JavaScript client library.
+			gapi.load('client', start);
+		</script>
+
 		<script type="text/javascript" src="libs/modernizr.js"></script>
+		<script type="text/javascript" src="Recorder.js"></script>
 		<script type="text/javascript" src="SlitScan.js"></script>
 		<script type="text/javascript" src="libs/dat.gui.js"></script>
 		<!-- <script type="text/javascript" src="libs/stats.min.js"></script> -->
@@ -103,6 +137,13 @@
 			html:fullscreen .hide-fullscreen {
 				display:none !important;
 			}
+
+			google-youtube-upload {
+				width: 300px; height: 300px;
+				position: absolute;
+				top: 0; left: 0;
+				z-index: 101;
+			}
 			
 		</style>
 
@@ -140,64 +181,80 @@
 					}
 				}, "save image");
 
-				var isRecording = false
-				var gif
-				gui.add({
-					"record gif": function(){
-						if(isRecording){
-							
-							isRecording = false
-							clearInterval(gifInterval);
-							gif.render();
-							console.log('done getting gif frames');
-							gifStatus.innerHTML = 'processing...';
-							return
+				if(!Recorder.supported){
 
-						}else{
-							isRecording = true
+					var isRecordingGif = false
+					var gif
+					gui.add({
+						"record gif": function(){
+							if(isRecordingGif){
+								
+								isRecordingGif = false
+								clearInterval(gifInterval);
+								gif.render();
+								console.log('done getting gif frames');
+								gifStatus.innerHTML = 'processing...';
+								return
+
+							}else{
+								isRecordingGif = true
+							}
+
+							console.log('starting gif recording');
+
+							gifStatus.style.opacity = 1;
+							gifStatus.innerHTML = 'recording...';
+
+							var downsizeBy = 3;
+							var tempCanvas = document.createElement('canvas');
+							tempCanvas.width = Math.round(ss.canvas.width / downsizeBy);
+							tempCanvas.height = Math.round(ss.canvas.height / downsizeBy);
+							var tempCtx = tempCanvas.getContext('2d');
+
+							gif = new GIF({
+								workers: 8,
+								quality: 10, // lower is better, 10 is default
+								workerScript: 'libs/gif.worker.js',
+								width: tempCanvas.widht,
+								height: tempCanvas.height
+							});
+							gifInterval = setInterval(function(canvas){
+								tempCtx.drawImage(ss.canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+								gif.addFrame(tempCanvas, {copy: true, delay: 100});
+							}, 200);
+
+							gif.on('finished', function(blob) {
+								console.log('finished gif');
+								// window.open(URL.createObjectURL(blob));
+								var a = document.createElement('a');
+								a.href = URL.createObjectURL(blob);
+								a.download = "temporalis_" + Date.now() + ".gif";
+								a.click();
+								gifStatus.innerHTML = '';
+								gifStatus.style.opacity = 0;
+							});
 						}
+					}, "record gif");
+				}
 
-						console.log('starting gif recording');
+				if(Recorder.supported){
+					var recorder = new Recorder(ss.canvas)
 
-						gifStatus.style.opacity = 1;
-						gifStatus.innerHTML = 'recording...';
-
-						var downsizeBy = 3;
-						var tempCanvas = document.createElement('canvas');
-						tempCanvas.width = Math.round(ss.canvas.width / downsizeBy);
-						tempCanvas.height = Math.round(ss.canvas.height / downsizeBy);
-						var tempCtx = tempCanvas.getContext('2d');
-
-						gif = new GIF({
-							workers: 8,
-							quality: 10, // lower is better, 10 is default
-							workerScript: 'libs/gif.worker.js',
-							width: tempCanvas.widht,
-							height: tempCanvas.height
-						});
-						gifInterval = setInterval(function(canvas){
-							tempCtx.drawImage(ss.canvas, 0, 0, tempCanvas.width, tempCanvas.height);
-							gif.addFrame(tempCanvas, {copy: true, delay: 100});
-						}, 200);
-
-						gif.on('finished', function(blob) {
-							console.log('finished gif');
-							// window.open(URL.createObjectURL(blob));
-							var a = document.createElement('a');
-							a.href = URL.createObjectURL(blob);
-							a.download = "temporalis_" + Date.now() + ".gif";
-							a.click();
-							gifStatus.innerHTML = '';
-							gifStatus.style.opacity = 0;
-						});
-						// setTimeout(function(){
-						// 	clearInterval(gifInterval);
-						// 	gif.render();
-						// 	console.log('done getting gif frames');
-						// 	gifStatus.innerHTML = 'processing...';
-						// }, 6000);
-					}
-				}, "record gif");
+					gui.add({'record video': function(){
+						console.log('record video', recorder.state)
+						if(recorder.status() === 'recording'){
+							recorder.stop()
+							recorder.downloadVideo()
+							$('google-youtube-upload').uploadFile(recorder.getBlob())
+							gifStatus.innerHTML = ''
+							gifStatus.style.opacity = 0
+						}else{
+							recorder.start()
+							gifStatus.innerHTML = 'recording...'
+							gifStatus.style.opacity = 1
+						}
+					}}, 'record video')
+				}
 
 				document.querySelector('.media-input input').addEventListener('change', function(e){
 					// console.log(e.target.files)
@@ -233,6 +290,13 @@
 		<div class="media-input">
 			<input type="file" accepts="video/*">
 		</div>
+
+		<google-youtube-upload
+			auto
+			video-title="Temporalis"
+			privacy-status="unlisted"
+			client-id="785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com">
+		</google-youtube-upload>
 	</body>
 	
 </html>

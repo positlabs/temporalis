@@ -1,0 +1,13 @@
+{
+  "name": "md-gum-polyfill",
+  "homepage": "https://github.com/mozdevs/mediaDevices-getUserMedia-polyfill",
+  "_release": "2564902ee9",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "2564902ee98981ad4d3ea907449f55ec418cac78"
+  },
+  "_source": "git://github.com/mozdevs/mediaDevices-getUserMedia-polyfill.git",
+  "_target": "master",
+  "_originalSource": "mozdevs/mediaDevices-getUserMedia-polyfill"
+}

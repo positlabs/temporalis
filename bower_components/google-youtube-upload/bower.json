@@ -1,0 +1,39 @@
+{
+  "name": "google-youtube-upload",
+  "description": "Upload videos to YouTube from your browser.",
+  "homepage": "https://elements.polymer-project.org/elements/google-youtube-upload",
+  "main": "google-youtube-upload.html",
+  "authors": [
+    "Jeff Posnick <jeffy@google.com>"
+  ],
+  "license": "Apache-2.0",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "keywords": [
+    "google",
+    "youtube",
+    "upload",
+    "polymer",
+    "video",
+    "web-components",
+    "web-component"
+  ],
+  "dependencies": {
+    "cors-upload-sample": "googledrive/cors-upload-sample#master",
+    "google-apis": "GoogleWebComponents/google-apis#^1.1.5",
+    "google-signin": "GoogleWebComponents/google-signin#^1.3.2",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.3.1",
+    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.0.9",
+    "iron-pages": "PolymerElements/iron-pages#^1.0.7",
+    "md-gum-polyfill": "mozdevs/mediaDevices-getUserMedia-polyfill#master",
+    "paper-fab": "PolymerElements/paper-fab#^1.2.0",
+    "paper-styles": "PolymerElements/paper-styles#^1.1.4",
+    "polymer": "Polymer/polymer#^1.4.0"
+  },
+  "devDependencies": {
+    "google-youtube": "GoogleWebComponents/google-youtube#^1.2.1",
+    "iron-component-page": "PolymerElements/iron-component-page#^1.1.5"
+  }
+}

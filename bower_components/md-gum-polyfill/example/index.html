@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf8" />
+		<title>Demoing the polyfill</title>
+		<script src="../mediaDevices-getUserMedia-polyfill.js" defer></script>
+		<script src="main.js" defer></script>
+	</head>
+	<body>
+		<h1>Hello!</h1>
+		<p>If your browser supports WebRTC, we'll ask for permissions to use the webcam and display the output in a video.</p>
+		<p>If it doesn't, you'll get an error message.</p>
+		<video width="640" height="480" controls hidden></video>
+	</body>
+</html>

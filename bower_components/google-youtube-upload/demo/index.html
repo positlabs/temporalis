@@ -1,0 +1,149 @@
+<!doctype html>
+<!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>&lt;google-youtube-upload&gt; Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../../iron-pages/iron-pages.html">
+    <link rel="import" href="../../google-youtube/google-youtube.html">
+    <link rel="import" href="../google-youtube-upload.html">
+    <style>
+      google-youtube-upload {
+        width: 400px;
+        height: 300px;
+        border: 2px solid silver;
+        max-width: 100%;
+      }
+
+      google-youtube {
+        width: 400px;
+        height: 300px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p>
+      Upload videos with a
+      <code><a href="index.html" target="_blank">&lt;google-youtube-upload&gt;</a></code>
+      element!
+    </p>
+
+    <p>
+      Video capture requires a current version of either Chrome or Firefox.
+    </p>
+
+    <template is="dom-bind" id="app">
+      <iron-pages attr-for-selected="id"
+                  selected="[[state]]">
+        <section id="pre-upload">
+          <google-youtube-upload client-id="1081407441937-kb9ismfsf1nnk831pasehm47sg1qo936.apps.googleusercontent.com"
+                                 video-title="[[videoTitle]]"
+                                 description="[[description]]"
+                                 privacy-status="[[privacyStatus]]"
+                                 video-id="{{videoId}}"
+                                 on-youtube-upload-start="handleYouTubeUploadStart"
+                                 on-youtube-upload-progress="handleYouTubeUploadProgress"
+                                 on-youtube-upload-complete="handleYouTubeUploadComplete"
+                                 on-youtube-upload-fail="handleYouTubeUploadFail"
+                                 on-youtube-processing-poll="handleYouTubeProcessingPoll"
+                                 on-youtube-processing-complete="handleYouTubeProcessingComplete"
+                                 on-youtube-processing-fail="handleYouTubeProcessingFail">
+          </google-youtube-upload>
+        </section>
+
+        <section id="upload">
+          Upload Progress:
+          <progress max="1" value="[[fractionComplete]]"></progress>
+          {{computeProgressText(megabytesPerSecond, minutesRemaining, secondsRemaining)}}
+        </section>
+
+        <section id="upload-complete">
+          Upload complete. Please wait while video id '{{videoId}}' is
+          <a href="https://support.google.com/youtube/answer/71674?ref_topic=2888603" target="_blank">processing</a>
+          {{processingEllipses}}
+        </section>
+
+        <section id="processing-complete">
+          <p>
+            Processing complete. The video is available at
+            <a href$="[[computeVideoUrl(videoId)]]" target="_blank">[[computeVideoUrl(videoId)]]</a>
+            and embedded below:
+          </p>
+          <template is="dom-if" if="[[processingComplete]]">
+            <google-youtube video-id="[[videoId]]" rel="0"></google-youtube>
+          </template>
+        </section>
+
+        <section id="error">
+          [[error]]
+        </section>
+      </iron-pages>
+    </template>
+
+    <script>
+      var app = document.querySelector('#app');
+      app.state = 'pre-upload';
+      app.processingEllipses = '...';
+
+      app.computeProgressText = function(megabytesPerSecond, minutesRemaining, secondsRemaining) {
+        return megabytesPerSecond + 'MB/s, ' + minutesRemaining + 'm' + secondsRemaining + 's remaining';
+      };
+
+      app.computeVideoUrl = function(videoId) {
+        return 'https://youtu.be/' + videoId;
+      };
+
+      app.handleYouTubeUploadStart = function() {
+        app.state = 'upload';
+        app.fractionComplete = 0;
+      };
+
+      app.handleYouTubeUploadProgress = function(e) {
+        app.megabytesPerSecond = (e.detail.bytesPerSecond / (1024 * 1024)).toFixed(2);
+        app.minutesRemaining = Math.floor(e.detail.estimatedSecondsRemaining / 60);
+        app.secondsRemaining = Math.round(e.detail.estimatedSecondsRemaining % 60);
+        app.fractionComplete = e.detail.fractionComplete;
+      };
+
+      app.handleYouTubeUploadComplete = function() {
+        app.state = 'upload-complete';
+      };
+
+      app.handleYouTubeUploadFail = function(e) {
+        app.error = e.detail;
+        app.state = 'error';
+      };
+
+      app.handleYouTubeProcessingPoll = function() {
+        app.processingEllipses += '.';
+      };
+
+      app.handleYouTubeProcessingComplete = function() {
+        app.state = 'processing-complete';
+        app.processingComplete = true;
+      };
+
+      app.handleYouTubeProcessingFail = function(e) {
+        var error;
+
+        switch(e.detail.uploadStatus) {
+          case 'failed':
+            error = e.detail.failureReason || 'unknown error';
+            break;
+
+          case 'rejected':
+            error = e.detail.rejectionReason || 'unknown error';
+            break;
+
+          default:
+            error = 'unknown error';
+        }
+
+        app.error = 'YouTube processing failed (' + error + ').';
+        app.state = 'error';
+      };
+    </script>
+  </body>
+</html>

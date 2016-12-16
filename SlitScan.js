@@ -1,4 +1,3 @@
-//TODO: use RMP
 
 SlitScan = function () {
 

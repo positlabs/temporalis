@@ -1,0 +1,27 @@
+{
+  "name": "md-gum-polyfill",
+  "version": "1.0.0",
+  "description": "A polyfill to use the Promise-flavoured, `mediaDevices` based version of getUserMedia, in browsers that support *some sort* of getUserMedia.",
+  "main": "mediaDevices-getUserMedia-polyfill.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozdevs/mediaDevices-getUserMedia-polyfill.git"
+  },
+  "keywords": [
+    "getUserMedia",
+    "streaming",
+    "polyfill"
+  ],
+  "author": "sole",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/mozdevs/mediaDevices-getUserMedia-polyfill/issues"
+  },
+  "homepage": "https://github.com/mozdevs/mediaDevices-getUserMedia-polyfill#readme"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "temporalis",
+  "homepage": "https://github.com/positlabs/temporalis",
+  "authors": [
+    "jbeckwith <josh.beckwith@toolofna.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "google-youtube-upload": "GoogleWebComponents/google-youtube-upload#^2.0.0"
+  }
+}

@@ -102,7 +102,7 @@ if(Recorder.supported){
 			recorder.stop().then(function(blob){
 				recorder.downloadVideo()
 				if(signedIn){
-					$('google-youtube-upload').uploadFile(recorder.getBlob())
+					$('google-youtube-upload').uploadFile(blob)
 				}
 				gifStatus.innerHTML = ''
 				gifStatus.style.opacity = 0	

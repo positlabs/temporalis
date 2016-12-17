@@ -18,30 +18,20 @@ window.Recorder.supported = function(){
 
 Recorder.prototype = {
 	start: function(){
-		this._stream = this.canvas.captureStream()
+		this._stream = this.canvas.captureStream(24)
 		// https://cs.chromium.org/#chromium/src/third_party/WebKit/LayoutTests/fast/mediarecorder/MediaRecorder-isTypeSupported.html
 
 		this._mediaRecorder = new MediaRecorder(this._stream, this._options)
 		this._chunks = []
 		var doneTimeout
 		function handleDataAvailable(event) {
-			console.log(event.data.size)
+			// console.log(event.data.size)
 			if (event.data.size > 0) {
 				this._chunks.push(event.data)
 			} else {
 			}
-
 			//FIXME: videos are getting clipped...
-			clearTimeout(doneTimeout)
-			doneTimeout = setTimeout(isDone, 3000)
 		}
-		var isDone
-		this._dataPromise = new Promise(function(resolve, reject){
-			isDone = function(){
-				console.log('isDone')
-				resolve()
-			}
-		})
 		this._mediaRecorder.ondataavailable = handleDataAvailable.bind(this)
 		this._mediaRecorder.start()
 
@@ -55,9 +45,7 @@ Recorder.prototype = {
 		return new Promise(function(resolve, reject){
 			_this._mediaRecorder.stop()
 			// _this._mediaRecorder.onstop = function(){
-			_this._dataPromise.then(function(){
-				resolve(_this._getBlob())
-			})
+			resolve(_this._getBlob())
 			// }.bind(this)
 		})
 	},
@@ -74,8 +62,7 @@ Recorder.prototype = {
 		a.href = url
 		a.download = 'temporalis.webm'
 		a.click()
-		// setTimeout() here is needed for Firefox.
-  		setTimeout(function () {
+  		setTimeout(function () { // setTimeout() here is needed for Firefox.
 			window.URL.revokeObjectURL(url)	
 		}, 100)
 	}

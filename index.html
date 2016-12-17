@@ -13,6 +13,7 @@
 			}
 		</script>
 
+		<!-- TODO: figure out how to do this without depending on the google-youtube-upload component -->
 		<script src="./bower_components/webcomponentsjs/webcomponents.min.js"></script>
 		<link rel="import" href="./bower_components/polymer/polymer.html">
 		<link rel="import" href="./bower_components/google-youtube-upload/google-youtube-upload.html">
@@ -30,17 +31,18 @@
 					return gapi.client.people.people.get({
 						resourceName: 'people/me'
 					})
+	                // gapi.client.load('youtube', 'v3', function() {})
 				}).then(function(response) {
 					console.log(response.result)
 				}, function(reason) {
-					console.log('Error: ' + reason.result.error.message)
+					console.error('Error: ' + reason.result.error.message)
 				})
 			}
 			// 1. Load the JavaScript client library.
 			gapi.load('client', start);
 		</script>
 
-		<script type="text/javascript" src="libs/modernizr.js"></script>
+		<!-- <script type="text/javascript" src="libs/modernizr.js"></script> -->
 		<script type="text/javascript" src="Recorder.js"></script>
 		<script type="text/javascript" src="SlitScan.js"></script>
 		<script type="text/javascript" src="libs/dat.gui.js"></script>
@@ -56,6 +58,7 @@
 				width: 100%; height: 100%;
 				top: 0; left: 0;
 				overflow: hidden;
+				font-family: Roboto, sans-serif;
 			}
 
 			canvas#slit-scan {
@@ -64,10 +67,6 @@
 				left: 0;
 			}
 			canvas#slit-scan.mirror {
-				-o-transform: scaleX(-1);
-				-ms-transform: scaleX(-1);
-				-moz-transform: scaleX(-1);
-				-webkit-transform: scaleX(-1);
 				transform: scaleX(-1);
 			}
 
@@ -138,10 +137,15 @@
 				display:none !important;
 			}
 
-			google-youtube-upload {
-				width: 300px; height: 300px;
+			.yt-upload {
+				color: white;
 				position: absolute;
-				top: 0; left: 0;
+				top: 0px; left: 20px;
+				font-size: .9em;
+			}
+
+			google-youtube-upload {
+				width: 164px; height: 40px;
 				z-index: 101;
 			}
 			
@@ -256,12 +260,28 @@
 					}}, 'record video')
 				}
 
-				document.querySelector('.media-input input').addEventListener('change', function(e){
+				/*
+					TODO: events for youtube uploads
+
+					youtube-upload-start
+					youtube-upload-progress
+					youtube-upload-fail
+					youtube-upload-complete
+					youtube-processing-poll
+					youtube-processing-fail
+					youtube-processing-complete
+				*/ 
+
+				$('.media-input input').addEventListener('change', function(e){
 					// console.log(e.target.files)
 					//TODO: make a method for this in ss
 					ss.canvas.classList.remove('mirror')
 					ss.video.src = URL.createObjectURL(e.target.files[0])
 					ss.video.play()
+				})
+
+				$('google-youtube-upload').addEventListener('signed-in', function(){
+					this.setAttribute('hidden')
 				})
 			};
 
@@ -291,12 +311,15 @@
 			<input type="file" accepts="video/*">
 		</div>
 
-		<google-youtube-upload
-			auto
-			video-title="Temporalis"
-			privacy-status="unlisted"
-			client-id="785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com">
-		</google-youtube-upload>
+		<div class="yt-upload">
+			<p>Sign in to upload videos directly to Youtube</p>
+			<google-youtube-upload
+				auto
+				video-title="Temporalis"
+				privacy-status="unlisted"
+				client-id="785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com">
+			</google-youtube-upload>
+		</div>
 	</body>
 	
 </html>

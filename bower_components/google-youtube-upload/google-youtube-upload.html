@@ -73,14 +73,16 @@ Automatic upload on video file select, with a custom title, and 'unlisted' priva
     }
 
     #profile {
+      position: absolute;
+      left: 0; top: 0;
       border-radius: 50%;
       cursor: pointer;
-      height: 40px;
-      left: 16px;
-      position: absolute;
-      top: 16px;
-      width: 40px;
+      width: 40px; height: 40px;
       z-index: 1;
+    }
+    google-signin {
+      position: absolute;
+      right: 0;
     }
   </style>
 
@@ -114,7 +116,7 @@ Automatic upload on video file select, with a custom title, and 'unlisted' priva
                        on-google-signed-out="_handleSignedOut">
         </google-signin>
 
-        <template is="dom-if" if="[[_channel]]">
+        <!-- <template is="dom-if" if="[[_channel]]">
           <div class="fabs">
             <paper-fab icon="google-youtube-upload-icons:theaters"
                        mini
@@ -128,10 +130,10 @@ Automatic upload on video file select, with a custom title, and 'unlisted' priva
                        title="Record Video">
             </paper-fab>
           </div>
-        </template>
+        </template> -->
       </section>
 
-      <section name="upload-file">
+      <!-- <section name="upload-file">
         <input type="file"
                accept="video/*"
                on-change="_handleFileChanged">
@@ -183,7 +185,7 @@ Automatic upload on video file select, with a custom title, and 'unlisted' priva
 
       <section name="thanks">
         <p>Your video is being uploaded.</p>
-      </section>
+      </section> -->
     </iron-pages>
   </template>
 </dom-module>
@@ -656,12 +658,14 @@ Automatic upload on video file select, with a custom title, and 'unlisted' priva
     _handleSignedIn: function() {
       this._accessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
       this._loadChannels();
+      this.fire('signed-in');
     },
 
     _handleSignedOut: function() {
       this._accessToken = null;
       this._channel = null;
       this._loadChannelRequested = false;
+      this.fire('signed-out');
     },
 
     // Computed value helpers.

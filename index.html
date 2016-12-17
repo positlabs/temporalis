@@ -42,271 +42,14 @@
 			gapi.load('client', start);
 		</script>
 
-		<!-- <script type="text/javascript" src="libs/modernizr.js"></script> -->
 		<script type="text/javascript" src="Recorder.js"></script>
 		<script type="text/javascript" src="SlitScan.js"></script>
 		<script type="text/javascript" src="libs/dat.gui.js"></script>
 		<!-- <script type="text/javascript" src="libs/stats.min.js"></script> -->
 		<script type="text/javascript" src="libs/gif.js"></script>
 
-		<style type="text/css">
+		<link rel="stylesheet" href="style.css">
 
-			body, html {
-				background: black;
-				margin: 0;
-				position: absolute;
-				width: 100%; height: 100%;
-				top: 0; left: 0;
-				overflow: hidden;
-				font-family: Roboto, sans-serif;
-			}
-
-			canvas#slit-scan {
-				position: absolute;
-				top: 0;
-				left: 0;
-			}
-			canvas#slit-scan.mirror {
-				transform: scaleX(-1);
-			}
-
-			.media-input {
-				position: absolute;
-				top: 0; left: 0;
-				width: 100%; height: 100%;
-				z-index: 1;
-			}
-			.media-input input {
-				width: 100%; height: 100%;
-				opacity: 0;
-			}
-
-			#buffer {
-				position: absolute;
-				top: 0;
-				left: 0;
-				z-index: 1;
-				display: none;
-			}
-
-			.dg.ac {
-				z-index: 10;
-			}
-			.dg.main {
-				margin-right: 0;
-			}
-
-			a {
-				position: absolute;
-				width: 100%;
-				bottom: 10px;
-				text-align: center;
-				color: white;
-				text-decoration: none;
-				font-family: Helvetica, Arial, sans;
-				z-index: 10;
-				text-shadow: 0 0 2px black;
-			}
-
-			a:hover {
-				color: red;
-			}
-
-			#gif-status {
-				position: absolute;
-				right: 10px;
-				bottom: 10px;
-				color: black;
-				background: red;
-				padding: 5px 10px;
-				opacity: 0;
-				transition: opacity 1s;
-				text-transform: uppercase;
-				z-index: 100;
-			}
-
-			html:-moz-full-screen .hide-fullscreen{
-				display:none !important;
-			}
-			 
-			html:-webkit-full-screen .hide-fullscreen{
-				display:none !important;
-			}
-			 
-			html:fullscreen .hide-fullscreen {
-				display:none !important;
-			}
-
-			.yt-upload {
-				color: white;
-				position: absolute;
-				top: 0px; left: 20px;
-				font-size: .9em;
-			}
-
-			google-youtube-upload {
-				width: 164px; height: 40px;
-				z-index: 101;
-			}
-			
-		</style>
-
-		<script type="text/javascript">
-
-			var $ = function(selector){return document.querySelector(selector);};
-
-			var ss, 
-				gifInterval,
-				gifStatus,
-				signedIn;
-
-			window.onload = function () {
-
-				initAnalytics();
-
-				gifStatus = $('#gif-status');
-				ss = new SlitScan();
-
-				var gui = new dat.GUI();
-				gui.add(ss, 'slices', 0, 400).step(1);
-				gui.add(ss, 'mode', ['vertical', 'horizontal']);
-				gui.add(ss, 'throttle', false);
-				
-				gui.add({
-					fullscreen: function(){
-						var el = document.documentElement;
-						var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen;
-						rfs.call(el);
-					}
-				}, "fullscreen");
-				
-				gui.add({
-					"save image": function(){
-						window.open(document.querySelector('#slit-scan').toDataURL(), '_blank');
-					}
-				}, "save image");
-
-				if(!Recorder.supported){
-
-					var isRecordingGif = false
-					var gif
-					gui.add({
-						"record gif": function(){
-							if(isRecordingGif){
-								
-								isRecordingGif = false
-								clearInterval(gifInterval);
-								gif.render();
-								console.log('done getting gif frames');
-								gifStatus.innerHTML = 'processing...';
-								return
-
-							}else{
-								isRecordingGif = true
-							}
-
-							console.log('starting gif recording');
-
-							gifStatus.style.opacity = 1;
-							gifStatus.innerHTML = 'recording...';
-
-							var downsizeBy = 3;
-							var tempCanvas = document.createElement('canvas');
-							tempCanvas.width = Math.round(ss.canvas.width / downsizeBy);
-							tempCanvas.height = Math.round(ss.canvas.height / downsizeBy);
-							var tempCtx = tempCanvas.getContext('2d');
-
-							gif = new GIF({
-								workers: 8,
-								quality: 10, // lower is better, 10 is default
-								workerScript: 'libs/gif.worker.js',
-								width: tempCanvas.widht,
-								height: tempCanvas.height
-							});
-							gifInterval = setInterval(function(canvas){
-								tempCtx.drawImage(ss.canvas, 0, 0, tempCanvas.width, tempCanvas.height);
-								gif.addFrame(tempCanvas, {copy: true, delay: 100});
-							}, 200);
-
-							gif.on('finished', function(blob) {
-								console.log('finished gif');
-								// window.open(URL.createObjectURL(blob));
-								var a = document.createElement('a');
-								a.href = URL.createObjectURL(blob);
-								a.download = "temporalis_" + Date.now() + ".gif";
-								a.click();
-								gifStatus.innerHTML = '';
-								gifStatus.style.opacity = 0;
-							});
-						}
-					}, "record gif");
-				}
-
-				if(Recorder.supported){
-					var recorder = new Recorder(ss.canvas)
-
-					gui.add({'record video': function(){
-						console.log('record video', recorder.state)
-						
-						if(recorder.status() === 'recording'){
-							gifStatus.innerHTML = 'processing...'
-							recorder.stop().then(function(blob){
-								recorder.downloadVideo()
-								if(signedIn){
-									$('google-youtube-upload').uploadFile(recorder.getBlob())
-								}
-								gifStatus.innerHTML = ''
-								gifStatus.style.opacity = 0	
-							})
-						}else{
-							recorder.start()
-							gifStatus.innerHTML = 'recording...'
-							gifStatus.style.opacity = 1
-						}
-					}}, 'record video')
-				}
-
-				/*
-					TODO: events for youtube uploads
-
-					youtube-upload-start
-					youtube-upload-progress
-					youtube-upload-fail
-					youtube-upload-complete
-					youtube-processing-poll
-					youtube-processing-fail
-					youtube-processing-complete
-				*/ 
-
-				$('.media-input input').addEventListener('change', function(e){
-					// console.log(e.target.files)
-					//TODO: make a method for this in ss
-					ss.canvas.classList.remove('mirror')
-					ss.video.src = URL.createObjectURL(e.target.files[0])
-					ss.video.play()
-				})
-
-				$('google-youtube-upload').addEventListener('signed-in', function(){ signedIn = true })
-				$('google-youtube-upload').addEventListener('signed-out', function(){ signedIn = false })
-			};
-
-			var initAnalytics = function(){
-
-				var _gaq = _gaq || [];
-				_gaq.push(['_setAccount', 'UA-24253469-1']);
-				_gaq.push(['_trackPageview']);
-
-				(function () {
-					var ga = document.createElement('script');
-					ga.type = 'text/javascript';
-					ga.async = true;
-					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-					var s = document.getElementsByTagName('script')[0];
-					s.parentNode.insertBefore(ga, s);
-				})();
-			};
-
-		</script>
 	</head>
 
 	<body>
@@ -325,6 +68,22 @@
 				client-id="785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com">
 			</google-youtube-upload>
 		</div>
+		
+		<script src='index.js'></script>
+
+		<script>
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-24253469-1']);
+			_gaq.push(['_trackPageview']);
+			(function () {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
 	</body>
 	
 </html>

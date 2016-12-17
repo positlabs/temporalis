@@ -1,3 +1,4 @@
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia
 
 SlitScan = function () {
 
@@ -8,11 +9,23 @@ SlitScan = function () {
 		ctx = canvas.getContext('2d'),
 		bufferCanvas = document.createElement('canvas'),
 		buffCtx = bufferCanvas.getContext('2d'),
-		frames = []
+		frames = [],
+		_camera = ''
 
 	var options = {
 		video: video,
 		canvas: canvas,
+		get camera(){ return _camera },
+		set camera(value){
+			_camera = value
+			navigator.mediaDevices.enumerateDevices().then(function(info) {
+				info.map(function(device){
+					if(device.label === value){
+						initCamera(device.deviceId)
+					}
+				})
+			})
+		},
 		slices: 70,
 		mode: 'vertical',
 		throttle: false
@@ -58,12 +71,21 @@ SlitScan = function () {
 	}
 	window.addEventListener('resize', onResize)
 
-	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia
-	// navigator.getUserMedia = false
 	if(navigator.getUserMedia){
+
+	}else{
+		video.src = './dance.mp4'
+		video.play()
+	}
+
+	function initCamera(cameraID){
+		console.log('initCamera', cameraID)
 		canvas.classList.add('mirror')
-		navigator.getUserMedia({
+		var constraints = {
 			video: {
+				mandatory: {
+					sourceId: cameraID
+				},
 				optional: [
 					{ minWidth: 1280 },
 					{ minHeight: 720 },
@@ -71,7 +93,9 @@ SlitScan = function () {
 				]
 			},
 			audio: false
-		}, function (localMediaStream) {
+		}
+		navigator.getUserMedia(constraints, function (localMediaStream) {
+			console.log('localMediaStream', localMediaStream)
 			video.src = window.URL.createObjectURL(localMediaStream)
 			setTimeout(function(){
 				video.play()
@@ -81,9 +105,6 @@ SlitScan = function () {
 				console.log('User declined permissions.', e)
 			}
 		})
-	}else{
-		video.src = './dance.mp4'
-		video.play()
 	}
 
 	var update = function(){
@@ -153,8 +174,6 @@ SlitScan = function () {
 			frames.shift()
 		}
 	}
-
-	// draw()
 
 	return options
 }

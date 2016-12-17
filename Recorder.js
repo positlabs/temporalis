@@ -30,6 +30,8 @@ Recorder.prototype = {
 				this._chunks.push(event.data)
 			} else {
 			}
+
+			//FIXME: videos are getting clipped...
 			clearTimeout(doneTimeout)
 			doneTimeout = setTimeout(isDone, 3000)
 		}

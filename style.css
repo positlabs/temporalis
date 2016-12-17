@@ -1,0 +1,97 @@
+body, html {
+	background: black;
+	margin: 0;
+	position: absolute;
+	width: 100%; height: 100%;
+	top: 0; left: 0;
+	overflow: hidden;
+	font-family: Roboto, sans-serif;
+}
+
+canvas#slit-scan {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+canvas#slit-scan.mirror {
+	transform: scaleX(-1);
+}
+
+.media-input {
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%; height: 100%;
+	z-index: 1;
+}
+.media-input input {
+	width: 100%; height: 100%;
+	opacity: 0;
+}
+
+#buffer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	display: none;
+}
+
+.dg.ac {
+	z-index: 10;
+}
+.dg.main {
+	margin-right: 0;
+}
+
+a {
+	position: absolute;
+	width: 100%;
+	bottom: 10px;
+	text-align: center;
+	color: white;
+	text-decoration: none;
+	font-family: Helvetica, Arial, sans;
+	z-index: 10;
+	text-shadow: 0 0 2px black;
+}
+
+a:hover {
+	color: red;
+}
+
+#gif-status {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	color: black;
+	background: red;
+	padding: 5px 10px;
+	opacity: 0;
+	transition: opacity 1s;
+	text-transform: uppercase;
+	z-index: 100;
+}
+
+html:-moz-full-screen .hide-fullscreen{
+	display:none !important;
+}
+ 
+html:-webkit-full-screen .hide-fullscreen{
+	display:none !important;
+}
+ 
+html:fullscreen .hide-fullscreen {
+	display:none !important;
+}
+
+.yt-upload {
+	color: white;
+	position: absolute;
+	top: 0px; left: 20px;
+	font-size: .9em;
+}
+
+google-youtube-upload {
+	width: 164px; height: 40px;
+	z-index: 101;
+}

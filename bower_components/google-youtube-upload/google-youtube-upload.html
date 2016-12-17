@@ -73,16 +73,22 @@ Automatic upload on video file select, with a custom title, and 'unlisted' priva
     }
 
     #profile {
-      position: absolute;
-      left: 0; top: 0;
+      position: relative;
+      float: left;
       border-radius: 50%;
       cursor: pointer;
       width: 40px; height: 40px;
       z-index: 1;
     }
     google-signin {
-      position: absolute;
-      right: 0;
+      position: relative;
+      float: left;
+    }
+
+    section[name=login-logout] {
+      position: relative !important;
+      float: left;
+      margin-left: 5px;
     }
   </style>
 

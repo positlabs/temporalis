@@ -157,7 +157,8 @@
 
 			var ss, 
 				gifInterval,
-				gifStatus;
+				gifStatus,
+				signedIn;
 
 			window.onload = function () {
 
@@ -246,12 +247,17 @@
 
 					gui.add({'record video': function(){
 						console.log('record video', recorder.state)
+						
 						if(recorder.status() === 'recording'){
-							recorder.stop()
-							recorder.downloadVideo()
-							$('google-youtube-upload').uploadFile(recorder.getBlob())
-							gifStatus.innerHTML = ''
-							gifStatus.style.opacity = 0
+							gifStatus.innerHTML = 'processing...'
+							recorder.stop().then(function(blob){
+								recorder.downloadVideo()
+								if(signedIn){
+									$('google-youtube-upload').uploadFile(recorder.getBlob())
+								}
+								gifStatus.innerHTML = ''
+								gifStatus.style.opacity = 0	
+							})
 						}else{
 							recorder.start()
 							gifStatus.innerHTML = 'recording...'
@@ -280,9 +286,8 @@
 					ss.video.play()
 				})
 
-				$('google-youtube-upload').addEventListener('signed-in', function(){
-					this.setAttribute('hidden')
-				})
+				$('google-youtube-upload').addEventListener('signed-in', function(){ signedIn = true })
+				$('google-youtube-upload').addEventListener('signed-out', function(){ signedIn = false })
 			};
 
 			var initAnalytics = function(){

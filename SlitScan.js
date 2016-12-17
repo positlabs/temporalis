@@ -47,6 +47,8 @@ SlitScan = function () {
 		canvas.style.height = video.offsetHeight * scale + 'px'
 		canvas.style.left = window.innerWidth * 0.5 - video.offsetWidth * scale * 0.5 + 'px'
 		canvas.style.top = window.innerHeight * 0.5 - video.offsetHeight * scale * 0.5 + 'px'
+
+		// TODO scale this down to max dimension of 1280
 		//canvas is same size as incoming video
 		canvas.width = video.videoWidth || 1
 		canvas.height = video.videoHeight || 1
@@ -63,7 +65,6 @@ SlitScan = function () {
 		navigator.getUserMedia({
 			video: {
 				optional: [
-					//request hi-rez capture
 					{ minWidth: 1280 },
 					{ minHeight: 720 },
 					{ minFrameRate: 60 }

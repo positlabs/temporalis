@@ -23,12 +23,23 @@ Recorder.prototype = {
 
 		this._mediaRecorder = new MediaRecorder(this._stream, this._options)
 		this._chunks = []
+		var doneTimeout
 		function handleDataAvailable(event) {
+			console.log(event.data.size)
 			if (event.data.size > 0) {
 				this._chunks.push(event.data)
 			} else {
 			}
+			clearTimeout(doneTimeout)
+			doneTimeout = setTimeout(isDone, 3000)
 		}
+		var isDone
+		this._dataPromise = new Promise(function(resolve, reject){
+			isDone = function(){
+				console.log('isDone')
+				resolve()
+			}
+		})
 		this._mediaRecorder.ondataavailable = handleDataAvailable.bind(this)
 		this._mediaRecorder.start()
 
@@ -37,22 +48,33 @@ Recorder.prototype = {
 	status: function(){
 		return this._mediaRecorder ? this._mediaRecorder.state : 'ready'
 	},
-	stop: function(){
-		this._mediaRecorder.stop()
+	stop: function(){ 
+		var _this = this
+		return new Promise(function(resolve, reject){
+			_this._mediaRecorder.stop()
+			// _this._mediaRecorder.onstop = function(){
+			_this._dataPromise.then(function(){
+				resolve(_this._getBlob())
+			})
+			// }.bind(this)
+		})
 	},
-	getBlob: function(){
+	_getBlob: function(){
 		return new Blob(this._chunks, {
 			type: 'video/webm'
 		})
 	},
 	downloadVideo: function(){
-		var url = URL.createObjectURL(this.getBlob())
+		var url = URL.createObjectURL(this._getBlob())
 		var a = document.createElement('a')
 		document.body.appendChild(a)
 		a.style = 'display: none'
 		a.href = url
 		a.download = 'temporalis.webm'
 		a.click()
-		window.URL.revokeObjectURL(url)
+		// setTimeout() here is needed for Firefox.
+  		setTimeout(function () {
+			window.URL.revokeObjectURL(url)	
+		}, 100)
 	}
 }

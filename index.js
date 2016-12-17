@@ -6,7 +6,7 @@ var ss = new SlitScan(),
 	signedIn
 
 var gui = new dat.GUI()
-gui.add(ss, 'slices', 0, 400).step(1)
+gui.add(ss, 'slices', 0, 600).step(1)
 gui.add(ss, 'mode', ['vertical', 'horizontal'])
 gui.add(ss, 'throttle', false)
 

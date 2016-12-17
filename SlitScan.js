@@ -55,18 +55,17 @@ SlitScan = function () {
 
 	function onResize(){
 		video.style.display = 'block'
-		var scale = Math.min(window.innerWidth / video.offsetWidth, window.innerHeight / video.offsetHeight)
-		canvas.style.width = video.offsetWidth * scale + 'px'
-		canvas.style.height = video.offsetHeight * scale + 'px'
-		canvas.style.left = window.innerWidth * 0.5 - video.offsetWidth * scale * 0.5 + 'px'
-		canvas.style.top = window.innerHeight * 0.5 - video.offsetHeight * scale * 0.5 + 'px'
+
+		var scale = 1280 / Math.max(video.videoWidth, video.videoHeight)
+		var w = video.videoWidth * scale
+		var h = video.videoHeight * scale
 
 		// TODO scale this down to max dimension of 1280
 		//canvas is same size as incoming video
-		canvas.width = video.videoWidth || 1
-		canvas.height = video.videoHeight || 1
-		bufferCanvas.width = canvas.width
-		bufferCanvas.height = canvas.height
+		canvas.width = w
+		canvas.height = h
+		bufferCanvas.width = w
+		bufferCanvas.height = h
 		video.style.display = 'none'
 	}
 	window.addEventListener('resize', onResize)

@@ -7,6 +7,8 @@ Does stuff like this with your webcam:
 
 ![](https://33.media.tumblr.com/20619dd3c6f8c0f6b97e802218017300/tumblr_nw3kg4mTMo1ubdspro1_500.gif)
 
+Note: This is an experiment. It won't work everywhere. Chrome / desktop will be your best option.
+
 
 ### Controls
 
@@ -19,6 +21,8 @@ Does stuff like this with your webcam:
 `save image` will open a new window with a static image. `quality` affects the size of the output image.
 
 `record gif` toggles gif recording state. Press once to start recording, and press again to save the gif.
+
+`record video` toggles video recording state. Press once to start recording, and press again to save the video.
 
 
 ### Drag and drop videos

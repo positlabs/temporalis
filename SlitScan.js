@@ -2,6 +2,8 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
 
 SlitScan = function () {
 
+	console.log('SlitScan')
+
 	var lastDrawTime = 0
 
 	var video = document.createElement('video'),
@@ -10,7 +12,8 @@ SlitScan = function () {
 		bufferCanvas = document.createElement('canvas'),
 		buffCtx = bufferCanvas.getContext('2d'),
 		frames = [],
-		_camera = ''
+		_camera = '',
+		videoPreviousTime = -1
 
 	var options = {
 		video: video,
@@ -28,7 +31,7 @@ SlitScan = function () {
 		},
 		slices: 70,
 		mode: 'vertical',
-		throttle: false
+		// throttle: false
 	}
 
 	document.body.appendChild(video)
@@ -56,11 +59,11 @@ SlitScan = function () {
 	function onResize(){
 		video.style.display = 'block'
 
+		// scale this down to max dimension of 1280
 		var scale = 1280 / Math.max(video.videoWidth, video.videoHeight)
 		var w = video.videoWidth * scale
 		var h = video.videoHeight * scale
 
-		// TODO scale this down to max dimension of 1280
 		//canvas is same size as incoming video
 		canvas.width = w
 		canvas.height = h
@@ -107,19 +110,14 @@ SlitScan = function () {
 	}
 
 	var update = function(){
-
-		if (options.throttle){
-			//throttle to 30 FPS, since on 2014 MacBook Pro, webcam captures at 30fps max.
-			if (Date.now() - lastDrawTime >= 1000 / 30) {
-				draw()
-				lastDrawTime = Date.now()
-			}
-		}else{
+		// console.log(video.currentTime)
+		if(video.currentTime !== videoPreviousTime){
 			draw()
 		}
+		videoPreviousTime = video.currentTime
+
 		// stats.update()
 		requestAnimationFrame(update)
-
 	}
 
 	function drawVert() {

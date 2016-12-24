@@ -30,7 +30,6 @@ Recorder.prototype = {
 				this._chunks.push(event.data)
 			} else {
 			}
-			//FIXME: videos are getting clipped...
 		}
 		this._mediaRecorder.ondataavailable = handleDataAvailable.bind(this)
 		this._mediaRecorder.start()

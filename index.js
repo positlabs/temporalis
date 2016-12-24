@@ -8,16 +8,16 @@ var ss = new SlitScan(),
 var gui = new dat.GUI()
 gui.add(ss, 'slices', 0, 600).step(1)
 gui.add(ss, 'mode', ['vertical', 'horizontal'])
-gui.add(ss, 'throttle', false)
 
 navigator.mediaDevices.enumerateDevices().then(function(info) {
 	var videoInputs = []
 	info.forEach(function(device){
 		if(device.kind === 'videoinput') videoInputs.push(device)
 	})
-	if(videoInputs.length < 2) return
 	var labels = videoInputs.map(function(device){ return device.label })
-	gui.add(ss, 'camera', labels)
+	if(videoInputs.length > 1){
+		gui.add(ss, 'camera', labels)
+	}
 	ss.camera = labels[0]
 })
 
@@ -135,5 +135,5 @@ $('.media-input input').addEventListener('change', function(e){
 	ss.video.play()
 })
 
-$('google-youtube-upload').addEventListener('signed-in', function(){ signedIn = true })
-$('google-youtube-upload').addEventListener('signed-out', function(){ signedIn = false })
+// $('google-youtube-upload').addEventListener('signed-in', function(){ signedIn = true })
+// $('google-youtube-upload').addEventListener('signed-out', function(){ signedIn = false })

@@ -14,32 +14,32 @@
 		</script>
 
 		<!-- TODO: figure out how to do this without depending on the google-youtube-upload component -->
-		<script src="./bower_components/webcomponentsjs/webcomponents.min.js"></script>
+		<!-- <script src="./bower_components/webcomponentsjs/webcomponents.min.js"></script>
 		<link rel="import" href="./bower_components/polymer/polymer.html">
 		<link rel="import" href="./bower_components/google-youtube-upload/google-youtube-upload.html">
-		<script src="https://apis.google.com/js/api.js"></script>
+		<script src="https://apis.google.com/js/api.js"></script> -->
 		<script>
-			function start(){
-				// 2. Initialize the JavaScript client library.
-				gapi.client.init({
-					'apiKey': 'AIzaSyCJfewyzhXAopvg3A8leAkxWFtoaQN12hQ',
-					'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
-					'clientId': '785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com',
-					'scope': 'profile',
-				}).then(function() {
-					// 3. Initialize and make the API request.
-					return gapi.client.people.people.get({
-						resourceName: 'people/me'
-					})
-	                // gapi.client.load('youtube', 'v3', function() {})
-				}).then(function(response) {
-					console.log(response.result)
-				}, function(reason) {
-					console.error('Error: ' + reason.result.error.message)
-				})
-			}
-			// 1. Load the JavaScript client library.
-			gapi.load('client', start);
+			// function start(){
+			// 	// 2. Initialize the JavaScript client library.
+			// 	gapi.client.init({
+			// 		'apiKey': 'AIzaSyCJfewyzhXAopvg3A8leAkxWFtoaQN12hQ',
+			// 		'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
+			// 		'clientId': '785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com',
+			// 		'scope': 'profile',
+			// 	}).then(function() {
+			// 		// 3. Initialize and make the API request.
+			// 		return gapi.client.people.people.get({
+			// 			resourceName: 'people/me'
+			// 		})
+	  //               // gapi.client.load('youtube', 'v3', function() {})
+			// 	}).then(function(response) {
+			// 		console.log(response.result)
+			// 	}, function(reason) {
+			// 		console.error('Error: ' + reason.result.error.message)
+			// 	})
+			// }
+			// // 1. Load the JavaScript client library.
+			// gapi.load('client', start);
 		</script>
 
 		<script type="text/javascript" src="Recorder.js"></script>
@@ -59,7 +59,7 @@
 			<input type="file" accepts="video/*">
 		</div>
 
-		<div class="yt-upload">
+		<!-- <div class="yt-upload">
 			<p>Sign in to upload videos directly to Youtube</p>
 			<google-youtube-upload
 				auto
@@ -70,7 +70,7 @@
 				categoryId="28"
 				client-id="785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com">
 			</google-youtube-upload>
-		</div>
+		</div> -->
 		<script src='index.js'></script>
 
 		<script>

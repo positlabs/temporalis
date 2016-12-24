@@ -31,7 +31,6 @@ SlitScan = function () {
 		},
 		slices: 70,
 		mode: 'vertical',
-		// throttle: false
 	}
 
 	document.body.appendChild(video)

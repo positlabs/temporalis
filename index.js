@@ -135,5 +135,5 @@ $('.media-input input').addEventListener('change', function(e){
 	ss.video.play()
 })
 
-// $('google-youtube-upload').addEventListener('signed-in', function(){ signedIn = true })
-// $('google-youtube-upload').addEventListener('signed-out', function(){ signedIn = false })
+$('google-youtube-upload').addEventListener('signed-in', function(){ signedIn = true })
+$('google-youtube-upload').addEventListener('signed-out', function(){ signedIn = false })

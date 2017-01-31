@@ -95,12 +95,11 @@ if(Recorder.supported){
 	var recorder = new Recorder(ss.canvas)
 
 	gui.add({'record video': function(){
-		console.log('record video', recorder.state)
+		console.log('record video', recorder.status())
 		
 		if(recorder.status() === 'recording'){
 			gifStatus.innerHTML = 'processing...'
 			recorder.stop().then(function(blob){
-				recorder.downloadVideo()
 				if(signedIn){
 					$('google-youtube-upload').uploadFile(blob)
 				}

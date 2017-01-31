@@ -17,44 +17,35 @@ window.Recorder.supported = function(){
 }
 
 Recorder.prototype = {
+
 	start: function(){
 		this._stream = this.canvas.captureStream(24)
 		// https://cs.chromium.org/#chromium/src/third_party/WebKit/LayoutTests/fast/mediarecorder/MediaRecorder-isTypeSupported.html
 
 		this._mediaRecorder = new MediaRecorder(this._stream, this._options)
-		this._chunks = []
-		var doneTimeout
-		function handleDataAvailable(event) {
-			// console.log(event.data.size)
-			if (event.data.size > 0) {
-				this._chunks.push(event.data)
-			} else {
-			}
-		}
-		this._mediaRecorder.ondataavailable = handleDataAvailable.bind(this)
 		this._mediaRecorder.start()
 
 		console.log(this._mediaRecorder)
 	},
+
 	status: function(){
 		return this._mediaRecorder ? this._mediaRecorder.state : 'ready'
 	},
+	
 	stop: function(){ 
 		var _this = this
 		return new Promise(function(resolve, reject){
 			_this._mediaRecorder.stop()
-			// _this._mediaRecorder.onstop = function(){
-			resolve(_this._getBlob())
-			// }.bind(this)
+			_this._mediaRecorder.ondataavailable = function(event){
+				resolve(event.data)
+				_this.downloadVideo(event.data)
+			}
 		})
 	},
-	_getBlob: function(){
-		return new Blob(this._chunks, {
-			type: 'video/webm'
-		})
-	},
-	downloadVideo: function(){
-		var url = URL.createObjectURL(this._getBlob())
+	
+	downloadVideo: function(blob){
+		// console.log('Recorder.downloadVideo', blob)
+		var url = URL.createObjectURL(blob)
 		var a = document.createElement('a')
 		document.body.appendChild(a)
 		a.style = 'display: none'

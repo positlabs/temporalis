@@ -10,10 +10,7 @@ gui.add(ss, 'slices', 0, 600).step(1)
 gui.add(ss, 'mode', ['vertical', 'horizontal'])
 
 navigator.mediaDevices.enumerateDevices().then(function(info) {
-	var videoInputs = []
-	info.forEach(function(device){
-		if(device.kind === 'videoinput') videoInputs.push(device)
-	})
+	var videoInputs = info.filter(function(device){ return device.kind === 'videoinput' })
 	var labels = videoInputs.map(function(device){ return device.label })
 	if(videoInputs.length > 1){
 		gui.add(ss, 'camera', labels)

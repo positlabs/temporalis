@@ -90,6 +90,7 @@ html:fullscreen .hide-fullscreen {
 	position: absolute;
 	top: 0px; left: 20px;
 	font-size: .9em;
+	z-index: 1;
 }
 
 google-youtube-upload {

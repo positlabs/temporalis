@@ -15,6 +15,8 @@ SlitScan = function () {
 		_camera = '',
 		videoPreviousTime = -1
 
+	ctx.imageSmoothingEnabled = false
+
 	var options = {
 		video: video,
 		canvas: canvas,
@@ -121,7 +123,8 @@ SlitScan = function () {
 
 	function drawVert() {
 
-		var sliceHeight = canvas.height / options.slices
+		// ceil prevents gaps in slices
+		var sliceHeight = Math.ceil(canvas.height / options.slices)
 
 		// save current frame to array
 		buffCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, bufferCanvas.width, bufferCanvas.height)
@@ -139,7 +142,8 @@ SlitScan = function () {
 
 	function drawHorz() {
 
-		var sliceWidth = canvas.width / options.slices
+		// ceil prevents gaps in slices
+		var sliceWidth = Math.ceil(canvas.width / options.slices)
 
 		// save current frame to array
 		buffCtx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, bufferCanvas.width, bufferCanvas.height)

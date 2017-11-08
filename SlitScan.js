@@ -13,6 +13,7 @@ SlitScan = function () {
 		buffCtx = bufferCanvas.getContext('2d'),
 		frames = [],
 		_camera = '',
+		stream = undefined,
 		videoPreviousTime = -1
 
 	ctx.imageSmoothingEnabled = false
@@ -22,10 +23,17 @@ SlitScan = function () {
 		canvas: canvas,
 		get camera(){ return _camera },
 		set camera(value){
+			console.log('set camera', value)
 			_camera = value
 			navigator.mediaDevices.enumerateDevices().then(function(info) {
 				info.map(function(device){
+					// console.log(device)
 					if(device.label === value){
+						if(device.label.indexOf('back') !== -1){
+							canvas.classList.remove('mirror')
+						}else{
+							canvas.classList.add('mirror')
+						}
 						initCamera(device.deviceId)
 					}
 				})
@@ -49,9 +57,9 @@ SlitScan = function () {
 	// stats.domElement.style.top = '0'
 	// stats.domElement.style.left = '0'
 
-	video.addEventListener('play', function () {
-		update()
-	})
+	// video.addEventListener('play', function () {
+		// update()
+	// })
 
 	video.addEventListener('loadedmetadata', function(){
 		onResize()
@@ -83,29 +91,35 @@ SlitScan = function () {
 
 	function initCamera(cameraID){
 		console.log('initCamera', cameraID)
-		canvas.classList.add('mirror')
 		var constraints = {
 			video: {
-				mandatory: {
-					sourceId: cameraID
-				},
-				optional: [
-					{ minWidth: 1280 },
-					{ minHeight: 720 },
-					{ minFrameRate: 60 }
-				]
+				deviceId: cameraID,
+				width: {ideal: 1280},
+				height: {ideal: 720},
+				frameRate: {ideal: 60}
 			},
 			audio: false
 		}
+		console.log(constraints)
+
+		if(stream) {
+			console.log('stopping old stream')
+			video.pause()
+			stream.getVideoTracks()[0].stop()
+		}
+		
 		navigator.getUserMedia(constraints, function (localMediaStream) {
-			console.log('localMediaStream', localMediaStream)
+			console.log('!!!localMediaStream', localMediaStream)
+			stream = localMediaStream
+			console.log(localMediaStream.getVideoTracks()[0])
 			video.src = window.URL.createObjectURL(localMediaStream)
 			setTimeout(function(){
 				video.play()
 			}, 500)
 		}, function (e) {
+			console.error(e)
 			if (e.code === 1) {
-				console.log('User declined permissions.', e)
+				console.error('User declined permissions.', e)
 			}
 		})
 	}
@@ -174,6 +188,8 @@ SlitScan = function () {
 			frames.shift()
 		}
 	}
+
+	update()
 
 	return options
 }

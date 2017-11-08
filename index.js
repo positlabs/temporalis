@@ -15,7 +15,9 @@ navigator.mediaDevices.enumerateDevices().then(function(info) {
 	if(videoInputs.length > 1){
 		gui.add(ss, 'camera', labels)
 	}
-	ss.camera = labels[0]
+	// setTimeout(function(){
+		ss.camera = labels[0]
+	// }, 5000)
 })
 
 gui.add({

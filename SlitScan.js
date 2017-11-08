@@ -16,6 +16,11 @@ SlitScan = function () {
 		stream = undefined,
 		videoPreviousTime = -1
 
+	// needed for ios 11 
+	video.attributes.playsinline = true
+	video.attributes.muted = true
+	video.attributes.autoplay = true
+
 	ctx.imageSmoothingEnabled = false
 
 	var options = {
@@ -126,6 +131,7 @@ SlitScan = function () {
 
 	var update = function(){
 		// console.log(video.currentTime)
+		// don't draw the same frame more than once
 		if(video.currentTime !== videoPreviousTime){
 			draw()
 		}

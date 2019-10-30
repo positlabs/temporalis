@@ -1,92 +1,50 @@
 <!doctype html>
 <html lang="en-US">
-	<head>
-		<meta charset="UTF-8">
-		<title>Temporalis</title>
+  <head>
+    <meta charset="UTF-8">
+    <title>Temporalis</title>
 
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-		<script>
-			// force https unless it's localhost
-			if(window.location.protocol === 'http:' && window.location.href.match('localhost') === -1) {
-				window.location.protocol = 'https:';
-			}
-		</script>
+    <script>
+      // force https unless it's localhost
+      if(window.location.protocol === 'http:' && window.location.href.match('localhost') === -1) {
+        window.location.protocol = 'https:';
+      }
+    </script>
 
-		<!-- TODO: figure out how to do this without depending on the google-youtube-upload component -->
-		<script src="./bower_components/webcomponentsjs/webcomponents.min.js"></script>
-		<link rel="import" href="./bower_components/polymer/polymer.html">
-		<link rel="import" href="./bower_components/google-youtube-upload/google-youtube-upload.html">
-		<script src="https://apis.google.com/js/api.js"></script>
-		<script>
-			function start(){
-				// 2. Initialize the JavaScript client library.
-				gapi.client.init({
-					'apiKey': 'AIzaSyCJfewyzhXAopvg3A8leAkxWFtoaQN12hQ',
-					'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
-					'clientId': '785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com',
-					'scope': 'profile',
-				}).then(function() {
-					// 3. Initialize and make the API request.
-					return gapi.client.people.people.get({
-						resourceName: 'people/me'
-					})
-	                // gapi.client.load('youtube', 'v3', function() {})
-				}).then(function(response) {
-					console.log(response.result)
-				}, function(reason) {
-					console.error('Error: ' + reason.result.error.message)
-				})
-			}
-			// 1. Load the JavaScript client library.
-			gapi.load('client', start);
-		</script>
+    <script type="text/javascript" src="bower_components/webrtc-adapter/release/adapter.js"></script>
+    <script type="text/javascript" src="Recorder.js"></script>
+    <script type="text/javascript" src="SlitScan.js"></script>
+    <script type="text/javascript" src="libs/dat.gui.js"></script>
+    <script type="text/javascript" src="libs/gif.js"></script>
 
-		<script type="text/javascript" src="bower_components/webrtc-adapter/release/adapter.js"></script>
-		<script type="text/javascript" src="Recorder.js"></script>
-		<script type="text/javascript" src="SlitScan.js"></script>
-		<script type="text/javascript" src="libs/dat.gui.js"></script>
-		<!-- <script type="text/javascript" src="libs/stats.min.js"></script> -->
-		<script type="text/javascript" src="libs/gif.js"></script>
+    <link rel="stylesheet" href="style.css">
 
-		<link rel="stylesheet" href="style.css">
+  </head>
 
-	</head>
+  <body>
+    <a class="hide-fullscreen" href="https://github.com/positlabs/temporalis" target="_blank">Fork on GitHub</a>
+    <div id="gif-status"></div>
+    <div class="media-input">
+      <input type="file" accepts="video/*">
+    </div>
 
-	<body>
-		<a class="hide-fullscreen" href="https://github.com/positlabs/temporalis" target="_blank">Fork on GitHub</a>
-		<div id="gif-status"></div>
-		<div class="media-input">
-			<input type="file" accepts="video/*">
-		</div>
+    <script src='index.js'></script>
 
-		<div class="yt-upload">
-			<p>Sign in to upload videos directly to Youtube</p>
-			<google-youtube-upload
-				auto
-				video-title="Temporalis"
-				privacyStatus="public"
-				description="Real time slit-scan effect. https://positlabs.github.io/temporalis/"
-				tags='["temporalis", "glitch", "javascript", "slit scan", "chronotopic anamorphosis", "trippy", "psychedelic", "silly"]'
-				categoryId="28"
-				client-id="785453175573-10pbcq9a82h7j26scjl1aht5qo965hci.apps.googleusercontent.com">
-			</google-youtube-upload>
-		</div>
-		<script src='index.js'></script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-24253469-1']);
+      _gaq.push(['_trackPageview']);
+      (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
 
-		<script>
-			var _gaq = _gaq || [];
-			_gaq.push(['_setAccount', 'UA-24253469-1']);
-			_gaq.push(['_trackPageview']);
-			(function () {
-				var ga = document.createElement('script');
-				ga.type = 'text/javascript';
-				ga.async = true;
-				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-				var s = document.getElementsByTagName('script')[0];
-				s.parentNode.insertBefore(ga, s);
-			})();
-		</script>
-	</body>
-	
 </html>

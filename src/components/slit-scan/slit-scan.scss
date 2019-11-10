@@ -1,21 +1,17 @@
 slit-scan {
-  canvas {
-    &#slit-scan {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: contain;
-    }
-    &#slit-scan.mirror {
-      transform: scaleX(-1);
-    }
-
-    &#buffer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-      display: none;
-    }
+  &[mirror] #slit-scan {
+    transform: scaleX(-1);
+  }
+  #slit-scan {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+  #buffer {
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 1;
+    display: none;
   }
 }

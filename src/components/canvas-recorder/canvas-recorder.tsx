@@ -1,5 +1,5 @@
 import { Component, Host, h, Element, Prop, Method } from '@stencil/core'
-
+// https://caniuse.com/#search=mediarecorder
 const {MediaRecorder} = window as any
 
 @Component({

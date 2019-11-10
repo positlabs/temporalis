@@ -18,8 +18,10 @@ export namespace Components {
     'status': () => Promise<any>;
     'stop': () => Promise<unknown>;
   }
+  interface CaptureButton {}
   interface SlitScan {
-    'camera': string;
+    'cameraId': string;
+    'mirror': boolean;
     'mode': string;
     'slices': number;
   }
@@ -35,6 +37,12 @@ declare global {
     new (): HTMLCanvasRecorderElement;
   };
 
+  interface HTMLCaptureButtonElement extends Components.CaptureButton, HTMLStencilElement {}
+  var HTMLCaptureButtonElement: {
+    prototype: HTMLCaptureButtonElement;
+    new (): HTMLCaptureButtonElement;
+  };
+
   interface HTMLSlitScanElement extends Components.SlitScan, HTMLStencilElement {}
   var HTMLSlitScanElement: {
     prototype: HTMLSlitScanElement;
@@ -48,6 +56,7 @@ declare global {
   };
   interface HTMLElementTagNameMap {
     'canvas-recorder': HTMLCanvasRecorderElement;
+    'capture-button': HTMLCaptureButtonElement;
     'slit-scan': HTMLSlitScanElement;
     'temporalis-app': HTMLTemporalisAppElement;
   }
@@ -57,8 +66,14 @@ declare namespace LocalJSX {
   interface CanvasRecorder {
     'canvas'?: HTMLCanvasElement;
   }
+  interface CaptureButton {
+    'onRecordEnd'?: (event: CustomEvent<any>) => void;
+    'onRecordStart'?: (event: CustomEvent<any>) => void;
+    'onSnapshot'?: (event: CustomEvent<any>) => void;
+  }
   interface SlitScan {
-    'camera'?: string;
+    'cameraId'?: string;
+    'mirror'?: boolean;
     'mode'?: string;
     'slices'?: number;
   }
@@ -66,6 +81,7 @@ declare namespace LocalJSX {
 
   interface IntrinsicElements {
     'canvas-recorder': CanvasRecorder;
+    'capture-button': CaptureButton;
     'slit-scan': SlitScan;
     'temporalis-app': TemporalisApp;
   }
@@ -78,6 +94,7 @@ declare module "@stencil/core" {
   export namespace JSX {
     interface IntrinsicElements {
       'canvas-recorder': LocalJSX.CanvasRecorder & JSXBase.HTMLAttributes<HTMLCanvasRecorderElement>;
+      'capture-button': LocalJSX.CaptureButton & JSXBase.HTMLAttributes<HTMLCaptureButtonElement>;
       'slit-scan': LocalJSX.SlitScan & JSXBase.HTMLAttributes<HTMLSlitScanElement>;
       'temporalis-app': LocalJSX.TemporalisApp & JSXBase.HTMLAttributes<HTMLTemporalisAppElement>;
     }

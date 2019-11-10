@@ -10,32 +10,30 @@ navigator.getUserMedia = navi.getUserMedia || navi.webkitGetUserMedia || navi.mo
 })
 export class SlitScan {
   @Prop() mode: string = 'vertical'
-  @Prop() camera: string = undefined
+  @Prop() cameraId: string = undefined
   @Prop() slices: number = 70
+  @Prop({reflectToAttr: true}) mirror: boolean = true
 
   @Watch('mode')
   onChangeMode() {
     this.drawMethod = this.mode === 'horizontal' ? this.drawHorz : this.drawVert
   }
 
-  @Watch('camera')
-  async onChangeCamera() {
-    console.log('onChangeCamera', this.camera)
+  @Watch('cameraId')
+  async onChangeCameraId() {
+    console.log('onChangeCameraId', this.cameraId)
     const info = await navigator.mediaDevices.enumerateDevices()
     const videoDevices = info.filter(device => device.kind === 'videoinput')
+    // ensure the camera exists and initialize if so
     const intitialized = videoDevices.map((device) => {
       // console.log(device)
-      if (device.label === this.camera) {
-        if(device.label.indexOf('back') !== -1){
-          this.canvas.classList.remove('mirror')
-        }else{
-          this.canvas.classList.add('mirror')
-        }
+      if (device.deviceId === this.cameraId) {
         this.initCamera(device.deviceId)
         return device
       }
       return false
     }).filter(d => d)
+    // fallback to first cam
     if (!intitialized.length) {
       this.initCamera(videoDevices[0].deviceId)
     }

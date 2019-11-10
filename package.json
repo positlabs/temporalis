@@ -1,0 +1,22 @@
+{
+  "name": "temporalis",
+  "version": "2.0.0",
+  "description": "temporalis",
+  "license": "MIT",
+  "files": [
+    "www/"
+  ],
+  "scripts": {
+    "build": "stencil build",
+    "start": "stencil build --dev --watch --serve",
+    "test": "stencil test --spec --e2e",
+    "test.watch": "stencil test --spec --e2e --watch",
+    "generate": "stencil generate"
+  },
+  "dependencies": {
+    "@ionic/core": "^4.9.1",
+    "@stencil/core": "^1.7.5",
+    "@stencil/sass": "^1.1.1",
+    "webrtc-adapter": "^7.3.0"
+  }
+}

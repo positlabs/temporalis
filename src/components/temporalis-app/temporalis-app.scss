@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.controls {
+  position: absolute;
+  bottom: 0; right: 0;
+  padding: 12px;
+  width: 200px;
+  max-height: 100%;
+  z-index: 10;
+  background: rgba(0,0,0, .9);
+  button, input {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+}
+

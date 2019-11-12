@@ -19,5 +19,8 @@
     "@stencil/core": "^1.7.5",
     "@stencil/sass": "^1.1.1",
     "webrtc-adapter": "^7.3.0"
+  },
+  "devDependencies": {
+    "workbox-build": "4.3.1"
   }
 }

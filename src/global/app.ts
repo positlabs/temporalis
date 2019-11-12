@@ -13,3 +13,14 @@ _gaq.push(['_trackPageview'])
   var s = document.getElementsByTagName('script')[0]
   s.parentNode.insertBefore(ga, s)
 })()
+
+// https://developers.google.com/web/fundamentals/app-install-banners/
+// prompt user to install webapp
+if (localStorage.getItem('returningUser')) {
+  window.addEventListener('beforeinstallprompt', e => {
+    const event = e as any
+    event.prompt()
+  })
+} else {
+  localStorage.setItem('returningUser', 'true')
+}

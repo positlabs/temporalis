@@ -2,7 +2,7 @@
   "hosting": {
     "headers": [
       {
-        "source": "/temporalis/build/p-*",
+        "source": "/build/p-*",
         "headers": [
           {
             "key": "Cache-Control",

@@ -12,7 +12,7 @@
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watch",
     "generate": "stencil generate",
-    "publish": "rm -rf docs && rsync -a -v ./www/temporalis/ ./docs && git add docs && git commit -am \"publish\" && git push"
+    "publish": "rm -rf docs && rsync -a -v ./www/ ./docs && git add docs && git commit -am \"publish\" && git push"
   },
   "dependencies": {
     "@ionic/core": "^4.9.1",

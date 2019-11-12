@@ -1,5 +1,10 @@
 import { Component, Host, h, Element, State, Watch } from '@stencil/core'
 
+// const isWebapp =
+//   window.matchMedia('(display-mode: standalone)').matches ||
+//   (window.navigator as any).standalone === true
+// TODO show download toasts when user is in webapp
+
 const isMobile =
   typeof window.orientation !== 'undefined' ||
   navigator.userAgent.indexOf('IEMobile') !== -1

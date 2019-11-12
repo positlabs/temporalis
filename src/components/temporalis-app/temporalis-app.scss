@@ -25,7 +25,7 @@ temporalis-app {
     bottom: 85px;
     background-image: url('./assets/menu-24px.svg');
     transition: 0.5s transform $easeOutExpo;
-    &[data-mode='vertical'] {
+    &[data-mode='horizontal'] {
       transform: rotate(90deg);
     }
   }

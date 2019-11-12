@@ -27,7 +27,7 @@ self.addEventListener('message', (event) => {
 self.__precacheManifest = [
   {
     "url": "index.html",
-    "revision": "a387645ec83e3cfb893c77c2437987a5"
+    "revision": "1baef9788f4527b1d3c6e405ca4d6365"
   },
   {
     "url": "build/index.esm.js",
@@ -50,7 +50,7 @@ self.__precacheManifest = [
   },
   {
     "url": "manifest.json",
-    "revision": "34015c9aeb693079b99be7c12b67112e"
+    "revision": "3d1d83175e4363a0135b9b5295058384"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});

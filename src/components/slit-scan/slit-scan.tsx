@@ -126,7 +126,7 @@ export class SlitScan {
     const maxAspect = Math.max(videoAspect, windowAspect)
     // normalized aspect diff
     const aspectDiff = Math.abs((videoAspect - windowAspect) / maxAspect)
-    this.canvas.style.objectFit = aspectDiff < 0.1 ? 'cover' : 'contain'
+    this.canvas.style.objectFit = aspectDiff < 0.15 ? 'cover' : 'contain'
     console.log(
       'fit',
       videoAspect,

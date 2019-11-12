@@ -72,7 +72,7 @@ export class TemporalisApp {
           id="slices"
           type="range"
           min="20"
-          max="500"
+          max="400"
           onInput={this.onChangeSlices.bind(this)}
         />
         <button

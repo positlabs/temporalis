@@ -1,5 +1,6 @@
 @import '../../global/easing';
 
+$dark: #333;
 $btnPad: 15px;
 temporalis-app {
   > button {
@@ -13,7 +14,7 @@ temporalis-app {
     background-repeat: no-repeat;
     background-position: center;
     position: absolute;
-    right: 25px;
+    right: 35px;
     cursor: pointer;
   }
   capture-button {
@@ -22,7 +23,7 @@ temporalis-app {
     right: $btnPad;
   }
   #mode {
-    bottom: 85px;
+    bottom: 105px;
     background-image: url('./assets/menu-24px.svg');
     transition: 0.5s transform $easeOutExpo;
     &[data-mode='horizontal'] {
@@ -30,7 +31,7 @@ temporalis-app {
     }
   }
   #switch-cam {
-    bottom: 135px;
+    bottom: 155px;
     background-image: url('./assets/flip_camera_ios-24px.svg');
   }
   #fullscreen {
@@ -39,10 +40,11 @@ temporalis-app {
   }
   #slices {
     position: absolute;
-    bottom: 33px;
-    $right: 85px;
+    bottom: 25px;
+    $right: 105px;
     right: $right;
-    width: calc(50% - #{$right});
+    width: calc(75% - #{$right});
+    max-width: 300px;
   }
 
   // https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
@@ -76,7 +78,7 @@ temporalis-app {
     height: 20px;
     width: 20px;
     border-radius: 50%;
-    background: black;
+    background: $dark;
     cursor: pointer;
   }
   input[type='range']::-webkit-slider-thumb {

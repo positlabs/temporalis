@@ -1,6 +1,6 @@
 import { Component, Host, h, Element, Prop, Method } from '@stencil/core'
 // https://caniuse.com/#search=mediarecorder
-const {MediaRecorder} = window as any
+const { MediaRecorder } = window as any
 
 @Component({
   tag: 'canvas-recorder',
@@ -8,7 +8,6 @@ const {MediaRecorder} = window as any
   // shadow: true
 })
 export class CanvasRecorder {
-
   @Element() el: HTMLElement
   @Prop() canvas: HTMLCanvasElement
 
@@ -28,9 +27,9 @@ export class CanvasRecorder {
     this.canvas = this.el.querySelector('canvas')
 
     if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
-      this.options = {mimeType: 'video/webm; codecs=vp9'}
+      this.options = { mimeType: 'video/webm; codecs=vp9' }
     } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
-      this.options = {mimeType: 'video/webm; codecs=vp8'}
+      this.options = { mimeType: 'video/webm; codecs=vp8' }
     } else {
       // hopefully something is supported...
     }
@@ -43,7 +42,7 @@ export class CanvasRecorder {
   }
 
   @Method()
-  async start(){
+  async start() {
     this.stream = (this.canvas as any).captureStream(24)
     // https://cs.chromium.org/#chromium/src/third_party/WebKit/LayoutTests/fast/mediarecorder/MediaRecorder-isTypeSupported.html
 
@@ -54,15 +53,15 @@ export class CanvasRecorder {
   }
 
   @Method()
-  async status(){
+  async status() {
     return this.mediaRecorder ? this.mediaRecorder.state : 'ready'
   }
 
   @Method()
-  async stop(){
+  async stop() {
     return new Promise((resolve, reject) => {
       this.mediaRecorder.stop()
-      this.mediaRecorder.ondataavailable = (event) => {
+      this.mediaRecorder.ondataavailable = event => {
         resolve(event.data)
         this.saveVideo(event.data)
       }
@@ -77,20 +76,29 @@ export class CanvasRecorder {
     a.href = url
     a.download = filename
     a.click()
+    setTimeout(() => a.remove(), 2000)
   }
 
-  saveVideo(blob){
+  saveVideo(blob) {
     // console.log('Recorder.downloadVideo', blob)
     const url = URL.createObjectURL(blob)
-    this.downloadURL(url, 'temporalis.webm')
-    setTimeout(() => { // setTimeout() here is needed for Firefox.
+    this.downloadURL(url, this.getFileName() + '.webm')
+    setTimeout(() => {
+      // setTimeout() here is needed for Firefox.
       window.URL.revokeObjectURL(url)
     }, 100)
   }
 
   @Method()
   async saveImage() {
-    var image = this.canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
-    this.downloadURL(image, 'temporalis.png')
+    var image = this.canvas
+      .toDataURL('image/png')
+      .replace('image/png', 'image/octet-stream')
+    this.downloadURL(image, this.getFileName() + '.png')
+  }
+
+  getFileName() {
+    const dateStringParts = new Date().toString().split(' ')
+    return 'temporalis_' + dateStringParts.slice(1, 5).join('_')
   }
 }

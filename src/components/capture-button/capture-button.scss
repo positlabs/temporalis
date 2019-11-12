@@ -1,12 +1,16 @@
 capture-button {
-  width: 60px;
-  height: 60px;
+  $size: 80px;
+  width: $size;
+  height: $size;
   transition: 0.3s transform ease-out;
   button {
     background: none;
     cursor: pointer;
     border: none;
     outline: none;
+    width: 100%;
+    height: 100%;
+    -webkit-tap-highlight-color: none;
     &:after,
     &:before {
       content: '';

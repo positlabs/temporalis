@@ -22,8 +22,8 @@ export class CaptureButton {
       <Host
         onMouseUp={this.onMouseUp.bind(this)}
         onMouseDown={this.onMouseDown.bind(this)}
-        onTouchStart={this.onMouseUp.bind(this)}
-        onTouchEnd={this.onMouseDown.bind(this)}
+        onTouchStart={this.onMouseDown.bind(this)}
+        onTouchEnd={this.onMouseUp.bind(this)}
         recording={this.isRecording}
       >
         <button></button>
@@ -31,6 +31,7 @@ export class CaptureButton {
     )
   }
   onMouseDown() {
+    console.log('onMouseDown')
     this.captureStart = Date.now()
     this.isDown = true
     setTimeout(() => {
@@ -41,6 +42,8 @@ export class CaptureButton {
     }, 300)
   }
   onMouseUp() {
+    console.log('onMouseUp')
+
     this.isDown = false
     if (this.isRecording) {
       this.isRecording = false

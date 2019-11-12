@@ -72,7 +72,6 @@ export class TemporalisApp {
           id="slices"
           type="range"
           min="20"
-          value={this.slices}
           max="500"
           onInput={this.onChangeSlices.bind(this)}
         />
@@ -110,6 +109,8 @@ export class TemporalisApp {
       const cameras = await this.getCameras()
       this.cameraId = cameras[0].deviceId
     }
+    const slicesSlider = this.el.querySelector('#slices') as HTMLInputElement
+    slicesSlider.value = this.slices.toString()
     console.log(this.cameraId)
   }
 

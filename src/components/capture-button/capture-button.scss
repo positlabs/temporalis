@@ -1,8 +1,10 @@
+@import '../../global/easing';
 capture-button {
   $size: 80px;
   width: $size;
   height: $size;
   transition: 0.3s transform ease-out;
+  z-index: 1;
   button {
     background: none;
     cursor: pointer;
@@ -10,7 +12,6 @@ capture-button {
     outline: none;
     width: 100%;
     height: 100%;
-    -webkit-tap-highlight-color: none;
     &:after,
     &:before {
       content: '';
@@ -33,12 +34,41 @@ capture-button {
       left: 0;
     }
   }
+  .pulse {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    z-index: -1;
+    border: 3px solid red;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
   &[recording] {
     transform: scale(0.95);
+    .pulse {
+      animation: 1s pulseAnim $easeOutQuart both;
+    }
     button {
       &:before {
         background: red;
       }
     }
+  }
+}
+@keyframes pulseAnim {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
   }
 }

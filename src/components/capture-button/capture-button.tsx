@@ -27,14 +27,14 @@ export class CaptureButton {
         recording={this.isRecording}
       >
         <button></button>
+        <div class="pulse"></div>
       </Host>
     )
   }
-  onMouseDown() {
-    const now = Date.now()
-    // throttling clicks
-    if (this.captureStart && now - this.captureStart < 200) return
+  onMouseDown(e) {
+    e.preventDefault()
     console.log('onMouseDown')
+    const now = Date.now()
     this.captureStart = now
     this.isDown = true
     setTimeout(() => {
@@ -42,9 +42,10 @@ export class CaptureButton {
       if (this.isDown) {
         this.isRecording = true
       }
-    }, 300)
+    }, 250)
   }
-  onMouseUp() {
+  onMouseUp(e) {
+    e.preventDefault()
     if (!this.isDown) return
     console.log('onMouseUp')
 

@@ -24,10 +24,9 @@ export class CaptureButton {
         onMouseDown={this.onMouseDown.bind(this)}
         onTouchStart={this.onMouseUp.bind(this)}
         onTouchEnd={this.onMouseDown.bind(this)}
+        recording={this.isRecording}
       >
-        <button>
-          <slot></slot>
-        </button>
+        <button></button>
       </Host>
     )
   }

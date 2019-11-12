@@ -1,23 +1,45 @@
-:host {
-  display: block;
-}
-
-.controls {
-  position: absolute;
-  bottom: 0; right: 0;
-  padding: 12px;
-  width: 200px;
-  max-height: 100%;
-  z-index: 10;
-  background: rgba(0,0,0, .9);
-  button, input {
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 5px;
+$btnPad: 15px;
+temporalis-app {
+  > button {
+    outline: none;
+    border: none;
+    background: none;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    right: 25px;
+    cursor: pointer;
   }
-
-  #capture {
-
+  capture-button {
+    position: absolute;
+    bottom: 15px;
+    right: $btnPad;
+  }
+  #mode {
+    bottom: 85px;
+    background-image: url('./assets/menu-24px.svg');
+    transition: 0.3s transform ease-out;
+    &[data-mode='vertical'] {
+      transform: rotate(90deg);
+    }
+  }
+  #switch-cam {
+    bottom: 135px;
+    background-image: url('./assets/flip_camera_ios-24px.svg');
+  }
+  #fullscreen {
+    top: $btnPad;
+    background-image: url('./assets/fullscreen-24px.svg');
+  }
+  #slices {
+    position: absolute;
+    bottom: 35px;
+    $right: 85px;
+    right: $right;
+    width: calc(50% - #{$right});
   }
 }
-

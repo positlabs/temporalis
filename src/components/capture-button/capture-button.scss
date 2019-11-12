@@ -1,3 +1,40 @@
-:host {
-  display: block;
+capture-button {
+  width: 60px;
+  height: 60px;
+  transition: 0.3s transform ease-out;
+  button {
+    background: none;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    &:after,
+    &:before {
+      content: '';
+      border-radius: 50%;
+      position: absolute;
+    }
+    &:before {
+      background: #333;
+      width: 80%;
+      height: 80%;
+      top: 10%;
+      left: 10%;
+      transition: 0.3s background-color ease-out;
+    }
+    &:after {
+      border: 2px solid white;
+      width: calc(100% - 4px);
+      height: calc(100% - 4px);
+      top: 0;
+      left: 0;
+    }
+  }
+  &[recording] {
+    transform: scale(0.95);
+    button {
+      &:before {
+        background: red;
+      }
+    }
+  }
 }

@@ -52,8 +52,7 @@ export class SlitScan {
   drawMethod: Function
 
   constructor() {
-    // defaults
-    this.drawMethod = this.drawVert
+    this.onChangeMode()
   }
 
   componentDidLoad() {
@@ -80,10 +79,6 @@ export class SlitScan {
     // this.video.addEventListener('play', () => {
     // update()
     // })
-
-    // TODO don't do this here. It should happen when props are set from the app
-    // this.mode = 'vertical'
-    // this.camera = 'FaceTime HD Camera'
 
     this.update()
   }
@@ -151,7 +146,8 @@ export class SlitScan {
         this.video.play()
       }, 500)
     }, (e) => {
-      console.error(e)
+        console.error(e)
+        // TODO handle denial?
       // if (e.code === 1) {
       // 	console.error('User declined permissions.', e)
       // }

@@ -4,6 +4,20 @@ const isMobile =
   typeof window.orientation !== 'undefined' ||
   navigator.userAgent.indexOf('IEMobile') !== -1
 
+const doc = window.document as any
+const docEl = doc.documentElement as any
+
+const requestFullScreen =
+  docEl.requestFullscreen ||
+  docEl.mozRequestFullScreen ||
+  docEl.webkitRequestFullScreen ||
+  docEl.msRequestFullscreen
+const cancelFullScreen =
+  doc.exitFullscreen ||
+  doc.mozCancelFullScreen ||
+  doc.webkitExitFullscreen ||
+  doc.msExitFullscreen
+
 @Component({
   tag: 'temporalis-app',
   styleUrl: 'temporalis-app.scss',
@@ -22,10 +36,18 @@ export class TemporalisApp {
   @State() facingMode: string = 'user'
 
   // store settings in localstorage
-  @Watch('mode') onMode(val) { localStorage.setItem('mode', val) }
-  @Watch('cameraId') onCameraId(val) { localStorage.setItem('cameraId', val) }
-  @Watch('slices') onSlices(val) { localStorage.setItem('slices', val) }
-  @Watch('facingMode') onFacingMode(val) { localStorage.setItem('facingMode', val) }
+  @Watch('mode') onMode(val) {
+    localStorage.setItem('mode', val)
+  }
+  @Watch('cameraId') onCameraId(val) {
+    localStorage.setItem('cameraId', val)
+  }
+  @Watch('slices') onSlices(val) {
+    localStorage.setItem('slices', val)
+  }
+  @Watch('facingMode') onFacingMode(val) {
+    localStorage.setItem('facingMode', val)
+  }
 
   constructor() {
     // load settings from localstorage
@@ -35,29 +57,53 @@ export class TemporalisApp {
   }
 
   render() {
-    const recordBtnLabel = this.recording ? 'stop recording' : 'start recording'
     return (
       <Host>
         <canvas-recorder>
-          <slit-scan mode={this.mode} slices={this.slices} cameraId={this.cameraId} mirror={this.mirror}></slit-scan>
+          <slit-scan
+            mode={this.mode}
+            slices={this.slices}
+            cameraId={this.cameraId}
+            mirror={this.mirror}
+          ></slit-scan>
         </canvas-recorder>
-        <div class="controls">
-          <button onClick={this.onClickSnapshot.bind(this)}>snapshot</button>
-          <button onClick={this.onClickRecord.bind(this)}>{recordBtnLabel}</button>
-          <input type="range" min="20" value={this.slices} max="500" onInput={this.onChangeSlices.bind(this)}/>
-          <button id="switch-cam" title="switch camera" onClick={this.onClickSwitchCam.bind(this)}>switch cam</button>
-          <button id="mode" title="change mode" onClick={this.onClickToggleMode.bind(this)}>change mode</button>
-          <capture-button id="capture" title="capture"
-            onSnapshot={this.onClickSnapshot.bind(this)}
-            onRecordStart={this.onRecordStart.bind(this)}
-            onRecordEnd={this.onRecordEnd.bind(this)}
-          >capture</capture-button>
-        </div>
+        <input
+          id="slices"
+          type="range"
+          min="20"
+          value={this.slices}
+          max="500"
+          onInput={this.onChangeSlices.bind(this)}
+        />
+        <button
+          id="switch-cam"
+          title="switch camera"
+          onClick={this.onClickSwitchCam.bind(this)}
+        ></button>
+        <button
+          id="fullscreen"
+          title="fullscreen"
+          onClick={this.onClickFullscreen.bind(this)}
+        ></button>
+        <button
+          id="mode"
+          title="change mode"
+          onClick={this.onClickToggleMode.bind(this)}
+          data-mode={this.mode}
+        ></button>
+        <capture-button
+          title="capture"
+          onSnapshot={this.onClickSnapshot.bind(this)}
+          onRecordStart={this.onRecordStart.bind(this)}
+          onRecordEnd={this.onRecordEnd.bind(this)}
+        ></capture-button>
       </Host>
     )
   }
   async componentDidLoad() {
-    this.recorder = this.el.querySelector('canvas-recorder') as HTMLCanvasRecorderElement
+    this.recorder = this.el.querySelector(
+      'canvas-recorder'
+    ) as HTMLCanvasRecorderElement
     this.cameraId = localStorage.getItem('cameraId')
     if (!this.cameraId) {
       const cameras = await this.getCameras()
@@ -103,7 +149,9 @@ export class TemporalisApp {
     } else {
       // next index behavior only on desktop
       // find current cam object then get index
-      const camera = cameras.filter(camera => camera.deviceId === this.cameraId)[0]
+      const camera = cameras.filter(
+        camera => camera.deviceId === this.cameraId
+      )[0]
       const currentIndex = camera ? cameras.indexOf(camera) : 0
       const nextIndex = (currentIndex + 1) % cameras.length
       this.cameraId = cameras[nextIndex].deviceId
@@ -113,6 +161,21 @@ export class TemporalisApp {
   }
 
   onClickToggleMode() {
-    this.mode === 'vertical' ? this.mode = 'horizontal' : this.mode = 'vertical'
+    this.mode === 'vertical'
+      ? (this.mode = 'horizontal')
+      : (this.mode = 'vertical')
+  }
+
+  onClickFullscreen() {
+    if (
+      !doc.fullscreenElement &&
+      !doc.mozFullScreenElement &&
+      !doc.webkitFullscreenElement &&
+      !doc.msFullscreenElement
+    ) {
+      requestFullScreen.call(docEl)
+    } else {
+      cancelFullScreen.call(doc)
+    }
   }
 }

@@ -1,7 +1,7 @@
 # Temporalis
 Slit-scan webcam with canvas
 
-https://positlabs.github.io/temporalis/
+https://temporalis.app
 
 Does stuff like this with your webcam: 
 

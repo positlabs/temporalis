@@ -7,7 +7,7 @@ export const config: Config = {
     {
       type: 'www',
       serviceWorker: null,
-      baseUrl: 'temporalis',
+      baseUrl: 'https://positlabs.github.io/temporalis/',
     },
   ],
   globalScript: 'src/global/app.ts',

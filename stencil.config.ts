@@ -7,7 +7,7 @@ export const config: Config = {
     {
       type: 'www',
       // serviceWorker: null,
-      baseUrl: 'https://temporalis.app/',
+      // baseUrl: 'https://temporalis.app/',
     },
   ],
   globalScript: 'src/global/app.ts',

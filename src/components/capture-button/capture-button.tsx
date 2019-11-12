@@ -31,8 +31,11 @@ export class CaptureButton {
     )
   }
   onMouseDown() {
+    const now = Date.now()
+    // throttling clicks
+    if (this.captureStart && now - this.captureStart < 200) return
     console.log('onMouseDown')
-    this.captureStart = Date.now()
+    this.captureStart = now
     this.isDown = true
     setTimeout(() => {
       // check if we should start recording based on if pointer is still down
@@ -42,6 +45,7 @@ export class CaptureButton {
     }, 300)
   }
   onMouseUp() {
+    if (!this.isDown) return
     console.log('onMouseUp')
 
     this.isDown = false

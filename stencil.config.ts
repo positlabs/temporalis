@@ -6,7 +6,7 @@ export const config: Config = {
   outputTargets: [
     {
       type: 'www',
-      serviceWorker: null,
+      // serviceWorker: null,
       // baseUrl: 'https://positlabs.github.io/temporalis/',
     },
   ],

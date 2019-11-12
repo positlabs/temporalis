@@ -43,7 +43,7 @@ temporalis-app {
     bottom: 25px;
     $right: 105px;
     right: $right;
-    width: calc(75% - #{$right});
+    width: calc(100% - #{$right} - #{$btnPad * 2});
     max-width: 300px;
   }
 

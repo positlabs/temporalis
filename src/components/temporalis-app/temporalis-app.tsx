@@ -62,6 +62,7 @@ export class TemporalisApp {
         <canvas-recorder>
           <slit-scan
             mode={this.mode}
+            cameraFacingMode={this.facingMode}
             slices={this.slices}
             cameraId={this.cameraId}
             mirror={this.mirror}

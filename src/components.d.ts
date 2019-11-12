@@ -20,6 +20,7 @@ export namespace Components {
   }
   interface CaptureButton {}
   interface SlitScan {
+    'cameraFacingMode': string;
     'cameraId': string;
     'mirror': boolean;
     'mode': string;
@@ -72,6 +73,7 @@ declare namespace LocalJSX {
     'onSnapshot'?: (event: CustomEvent<any>) => void;
   }
   interface SlitScan {
+    'cameraFacingMode'?: string;
     'cameraId'?: string;
     'mirror'?: boolean;
     'mode'?: string;

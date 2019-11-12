@@ -1,7 +1,11 @@
 import { Component, Host, h, Element, Prop, Watch } from '@stencil/core'
 
 const navi = navigator as any
-navigator.getUserMedia = navi.getUserMedia || navi.webkitGetUserMedia || navi.mozGetUserMedia || navi.msGetUserMedia
+navigator.getUserMedia =
+  navi.getUserMedia ||
+  navi.webkitGetUserMedia ||
+  navi.mozGetUserMedia ||
+  navi.msGetUserMedia
 
 @Component({
   tag: 'slit-scan',
@@ -11,8 +15,9 @@ navigator.getUserMedia = navi.getUserMedia || navi.webkitGetUserMedia || navi.mo
 export class SlitScan {
   @Prop() mode: string = 'vertical'
   @Prop() cameraId: string = undefined
+  @Prop() cameraFacingMode: string = undefined
   @Prop() slices: number = 70
-  @Prop({reflectToAttr: true}) mirror: boolean = true
+  @Prop({ reflectToAttr: true }) mirror: boolean = true
 
   @Watch('mode')
   onChangeMode() {
@@ -25,18 +30,25 @@ export class SlitScan {
     const info = await navigator.mediaDevices.enumerateDevices()
     const videoDevices = info.filter(device => device.kind === 'videoinput')
     // ensure the camera exists and initialize if so
-    const intitialized = videoDevices.map((device) => {
-      // console.log(device)
-      if (device.deviceId === this.cameraId) {
-        this.initCamera(device.deviceId)
-        return device
-      }
-      return false
-    }).filter(d => d)
+    const intitialized = videoDevices
+      .map(device => {
+        // console.log(device)
+        if (device.deviceId === this.cameraId) {
+          this.initCamera(device.deviceId)
+          return device
+        }
+        return false
+      })
+      .filter(d => d)
     // fallback to first cam
     if (!intitialized.length) {
       this.initCamera(videoDevices[0].deviceId)
     }
+  }
+
+  @Watch('cameraFacingMode')
+  onChangeCameraFacingMode(mode) {
+    this.initCamera(null, mode)
   }
 
   @Element() el: HTMLElement
@@ -87,13 +99,13 @@ export class SlitScan {
     return (
       <Host>
         <video playsinline muted autoplay></video>
-        <canvas id='slit-scan'></canvas>
-        <canvas id='buffer'></canvas>
+        <canvas id="slit-scan"></canvas>
+        <canvas id="buffer"></canvas>
       </Host>
     )
   }
 
-  onResize(){
+  onResize() {
     this.video.style.display = 'block'
 
     // scale this down to max dimension of 1280
@@ -115,48 +127,61 @@ export class SlitScan {
     // normalized aspect diff
     const aspectDiff = Math.abs((videoAspect - windowAspect) / maxAspect)
     this.canvas.style.objectFit = aspectDiff < 0.1 ? 'cover' : 'contain'
-    console.log('fit', videoAspect, windowAspect, aspectDiff, this.canvas.style.objectFit)
+    console.log(
+      'fit',
+      videoAspect,
+      windowAspect,
+      aspectDiff,
+      this.canvas.style.objectFit
+    )
   }
 
-  initCamera(cameraID){
+  initCamera(cameraID, facingMode = undefined) {
     console.log('initCamera', cameraID)
     var constraints = {
       video: {
-        deviceId: cameraID,
-        width: {ideal: 1280},
-        height: {ideal: 720},
-        frameRate: {ideal: 60}
+        deviceId: undefined,
+        facingMode: undefined,
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        frameRate: { ideal: 60 },
       },
-      audio: false
+      audio: false,
     }
+    if (cameraID) constraints.video.deviceId = cameraID
+    else if (facingMode) constraints.video.facingMode = facingMode
     console.log(constraints)
 
-    if(this.stream) {
+    if (this.stream) {
       console.log('stopping old stream')
       this.video.pause()
       this.stream.getVideoTracks()[0].stop()
     }
 
-    navigator.getUserMedia(constraints, (localMediaStream) => {
-      this.stream = localMediaStream
-      console.log('localMediaStream', this.stream)
-      console.log(this.stream.getVideoTracks()[0])
-      this.video.srcObject = this.stream
-      setTimeout(() => {
-        this.video.play()
-      }, 500)
-    }, (e) => {
+    navigator.getUserMedia(
+      constraints,
+      localMediaStream => {
+        this.stream = localMediaStream
+        console.log('localMediaStream', this.stream)
+        console.log(this.stream.getVideoTracks()[0])
+        this.video.srcObject = this.stream
+        setTimeout(() => {
+          this.video.play()
+        }, 500)
+      },
+      e => {
         console.error(e)
         // TODO handle denial?
-      // if (e.code === 1) {
-      // 	console.error('User declined permissions.', e)
-      // }
-    })
+        // if (e.code === 1) {
+        // 	console.error('User declined permissions.', e)
+        // }
+      }
+    )
   }
 
-  update(){
+  update() {
     // don't draw the same frame more than once
-    if(this.video.currentTime !== this.videoPreviousTime){
+    if (this.video.currentTime !== this.videoPreviousTime) {
       this.draw()
     }
     this.videoPreviousTime = this.video.currentTime
@@ -164,49 +189,94 @@ export class SlitScan {
   }
 
   drawVert() {
-
     // ceil prevents gaps in slices
     var sliceHeight = Math.ceil(this.canvas.height / this.slices)
 
     // save current frame to array
-    this.buffCtx.drawImage(this.video, 0, 0, this.video.videoWidth, this.video.videoHeight, 0, 0, this.bufferCanvas.width, this.bufferCanvas.height)
-    this.frames.push(this.buffCtx.getImageData(0, 0, this.bufferCanvas.width, this.bufferCanvas.height))
+    this.buffCtx.drawImage(
+      this.video,
+      0,
+      0,
+      this.video.videoWidth,
+      this.video.videoHeight,
+      0,
+      0,
+      this.bufferCanvas.width,
+      this.bufferCanvas.height
+    )
+    this.frames.push(
+      this.buffCtx.getImageData(
+        0,
+        0,
+        this.bufferCanvas.width,
+        this.bufferCanvas.height
+      )
+    )
 
     // draw slices to canvas
     var i = this.slices
     while (i--) {
       try {
-        this.ctx.putImageData(this.frames[i], 0, 0, 0, sliceHeight * i, this.bufferCanvas.width, sliceHeight)
-      } catch (e) {
-      }
+        this.ctx.putImageData(
+          this.frames[i],
+          0,
+          0,
+          0,
+          sliceHeight * i,
+          this.bufferCanvas.width,
+          sliceHeight
+        )
+      } catch (e) {}
     }
   }
 
   drawHorz() {
-
     // ceil prevents gaps in slices
     var sliceWidth = Math.ceil(this.canvas.width / this.slices)
 
     // save current frame to array
-    this.buffCtx.drawImage(this.video, 0, 0, this.video.videoWidth, this.video.videoHeight, 0, 0, this.bufferCanvas.width, this.bufferCanvas.height)
-    this.frames.push(this.buffCtx.getImageData(0, 0, this.bufferCanvas.width, this.bufferCanvas.height))
+    this.buffCtx.drawImage(
+      this.video,
+      0,
+      0,
+      this.video.videoWidth,
+      this.video.videoHeight,
+      0,
+      0,
+      this.bufferCanvas.width,
+      this.bufferCanvas.height
+    )
+    this.frames.push(
+      this.buffCtx.getImageData(
+        0,
+        0,
+        this.bufferCanvas.width,
+        this.bufferCanvas.height
+      )
+    )
 
     // draw slices to canvas
     var i = this.slices
     while (i--) {
       try {
-        this.ctx.putImageData(this.frames[i], 0, 0, sliceWidth * i, 0, sliceWidth, this.bufferCanvas.height)
-      } catch (e) {
-      }
+        this.ctx.putImageData(
+          this.frames[i],
+          0,
+          0,
+          sliceWidth * i,
+          0,
+          sliceWidth,
+          this.bufferCanvas.height
+        )
+      } catch (e) {}
     }
   }
 
-  draw () {
+  draw() {
     if (this.video.paused) return
     this.drawMethod()
-    while (this.frames.length > this.slices){
+    while (this.frames.length > this.slices) {
       this.frames.shift()
     }
   }
 }
-

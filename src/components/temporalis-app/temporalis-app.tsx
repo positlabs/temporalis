@@ -9,6 +9,9 @@ const isMobile =
   typeof window.orientation !== 'undefined' ||
   navigator.userAgent.indexOf('IEMobile') !== -1
 
+// mobile gets crashy at high slice count, so knock it down
+const maxSlices = isMobile ? 300 : 500
+
 const doc = window.document as any
 const docEl = doc.documentElement as any
 
@@ -77,7 +80,7 @@ export class TemporalisApp {
           id="slices"
           type="range"
           min="20"
-          max="400"
+          max={maxSlices}
           onInput={this.onChangeSlices.bind(this)}
         />
         <button

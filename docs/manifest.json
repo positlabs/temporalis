@@ -1,6 +1,6 @@
 {
-  "name": "temporalis",
-  "short_name": "temporalis",
+  "name": "Temporalis",
+  "short_name": "Temporalis",
   "start_url": "/",
   "display": "standalone",
   "icons": [
@@ -10,9 +10,9 @@
       "type": "image/png"
     },
     {
-      "src": "assets/icon/icon512.png",
+      "src": "assets/icon/logo512.jpg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/jpeg"
     }
   ],
   "background_color": "#333",
